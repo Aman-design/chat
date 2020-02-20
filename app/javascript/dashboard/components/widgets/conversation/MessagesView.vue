@@ -11,21 +11,34 @@
           <span v-if="shouldShowSpinner" class="spinner message" />
         </li>
       </transition>
-      <message
-        v-for="message in getReadMessages"
-        :key="message.id"
-        :data="message"
-      />
+      <div
+        v-for="groupedReadMessages in getReadMessages"
+        :key="groupedReadMessages.date + '-read'"
+      >
+        <date-separator :date="groupedReadMessages.date"></date-separator>
+        <message
+          v-for="message in groupedReadMessages.messages"
+          :key="message.id"
+          :data="message"
+        />
+      </div>
       <li v-show="getUnreadCount != 0" class="unread--toast">
         <span>
           {{ getUnreadCount }} UNREAD MESSAGE{{ getUnreadCount > 1 ? 'S' : '' }}
         </span>
       </li>
-      <message
-        v-for="message in getUnReadMessages"
-        :key="message.id"
-        :data="message"
-      />
+
+      <div
+        v-for="groupedReadMessages in getUnReadMessages"
+        :key="groupedReadMessages.date + '-unread'"
+      >
+        <date-separator :date="groupedReadMessages.date"></date-separator>
+        <message
+          v-for="message in groupedReadMessages.messages"
+          :key="message.id"
+          :data="message"
+        />
+      </div>
     </ul>
     <ReplyBox
       :conversation-id="currentChat.id"
@@ -38,13 +51,18 @@
 /* global bus */
 import { mapGetters } from 'vuex';
 
+import DateHelper from 'shared/helpers/DateHelper';
+import DateSeparator from 'shared/components/DateSeparator.vue';
 import ConversationHeader from './ConversationHeader';
 import ReplyBox from './ReplyBox';
 import Message from './Message';
 import conversationMixin from '../../../mixins/conversations';
 
+const groupBy = require('lodash.groupby');
+
 export default {
   components: {
+    DateSeparator,
     ConversationHeader,
     Message,
     ReplyBox,
@@ -87,30 +105,18 @@ export default {
       );
       return chat;
     },
-    // Get current FB Page ID
-    getPageId() {
-      let stateInbox;
-      if (this.inboxId) {
-        const inboxId = Number(this.inboxId);
-        [stateInbox] = this.inboxesList.filter(
-          inbox => inbox.channel_id === inboxId
-        );
-      } else {
-        [stateInbox] = this.inboxesList;
-      }
-      return !stateInbox ? 0 : stateInbox.page_id;
-    },
-    // Get current FB Page ID link
-    linkToMessage() {
-      return `https://m.me/${this.getPageId}`;
-    },
+
     getReadMessages() {
       const chat = this.getMessages;
-      return chat === undefined ? null : this.readMessages(chat);
+      return chat === undefined
+        ? null
+        : this.getGroupedConversation(this.readMessages(chat));
     },
     getUnReadMessages() {
       const chat = this.getMessages;
-      return chat === undefined ? null : this.unReadMessages(chat);
+      return chat === undefined
+        ? null
+        : this.getGroupedConversation(this.unReadMessages(chat));
     },
     shouldShowSpinner() {
       return (
@@ -132,6 +138,36 @@ export default {
   },
 
   methods: {
+    getGroupedConversation: messages => {
+      const messagesGroupedByDate = groupBy(Object.values(messages), message =>
+        new DateHelper(message.created_at).format()
+      );
+      return Object.keys(messagesGroupedByDate).map(date => {
+        const groupedMessages = messagesGroupedByDate[date].map(
+          (message, index) => {
+            let showAvatar = false;
+            if (index === messagesGroupedByDate[date].length - 1) {
+              showAvatar = true;
+            } else {
+              const nextMessage = messagesGroupedByDate[date][index + 1];
+              const currentSender = message.sender ? message.sender.name : '';
+              const nextSender = nextMessage.sender
+                ? nextMessage.sender.name
+                : '';
+              showAvatar =
+                currentSender !== nextSender ||
+                message.message_type !== nextMessage.message_type;
+            }
+            return { showAvatar, ...message };
+          }
+        );
+
+        return {
+          date,
+          messages: groupedMessages,
+        };
+      });
+    },
     focusLastMessage() {
       setTimeout(() => {
         this.attachListner();

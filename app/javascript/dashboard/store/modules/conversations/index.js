@@ -60,11 +60,6 @@ const mutations = {
     const [chat] = getSelectedChatConversation(_state);
     Vue.set(chat, 'allMessagesLoaded', false);
   },
-  [types.default.CLEAR_CURRENT_CHAT_WINDOW](_state) {
-    _state.selectedChat.id = null;
-    _state.selectedChat.agentTyping = 'off';
-  },
-
   [types.default.SET_PREVIOUS_CONVERSATIONS](_state, { id, data }) {
     if (data.length) {
       const [chat] = _state.allConversations.filter(c => c.id === id);

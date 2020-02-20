@@ -39,13 +39,12 @@ const getters = {
   },
   getUnreadCount(_state) {
     const [chat] = getSelectedChatConversation(_state);
+
     return chat.messages.filter(
       chatMessage =>
-        chatMessage.created_at * 1000 > chat.agent_last_seen_at * 1000 &&
-        (chatMessage.message_type === 0 && chatMessage.private !== true)
+        chatMessage.created_at * 1000 > chat.agent_last_seen_at * 1000
     ).length;
   },
-  getChatStatusFilter: ({ chatStatusFilter }) => chatStatusFilter,
   getSelectedInbox: ({ currentInbox }) => currentInbox,
   getConvTabStats: ({ convTabStats }) => convTabStats,
 };

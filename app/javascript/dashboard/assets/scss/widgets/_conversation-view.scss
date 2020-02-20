@@ -171,7 +171,7 @@
   margin-bottom: $space-small;
   overflow-y: scroll;
 
-  >li {
+  li {
     @include flex;
     @include flex-shrink;
     @include margin($zero $zero $space-smaller);
@@ -276,13 +276,7 @@
       }
     }
 
-    .sender--thumbnail {
-      @include round-corner();
-      height: $space-slab;
-      margin-right: $space-one;
-      margin-top: $space-micro;
-      width: $space-slab;
-    }
+
 
     .activity-wrap {
       @include flex;
