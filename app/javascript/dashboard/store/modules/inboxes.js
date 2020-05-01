@@ -3,6 +3,7 @@ import * as types from '../mutation-types';
 import InboxesAPI from '../../api/inboxes';
 import WebChannel from '../../api/channel/webChannel';
 import FBChannel from '../../api/channel/fbChannel';
+import TwilioChannel from '../../api/channel/twilioChannel';
 
 export const state = {
   records: [],
@@ -54,6 +55,18 @@ export const actions = {
       throw new Error(error);
     }
   },
+  createTwilioChannel: async ({ commit }, params) => {
+    try {
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: true });
+      const response = await TwilioChannel.create(params);
+      commit(types.default.ADD_INBOXES, response.data);
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
+      return response.data;
+    } catch (error) {
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
+      throw new Error(error);
+    }
+  },
   createFBChannel: async ({ commit }, params) => {
     try {
       commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: true });
@@ -66,25 +79,20 @@ export const actions = {
       throw new Error(error);
     }
   },
-  updateWebsiteChannel: async ({ commit }, { id, ...inboxParams }) => {
-    commit(types.default.SET_INBOXES_UI_FLAG, { isUpdating: true });
-    try {
-      const response = await WebChannel.update(id, inboxParams);
-      commit(types.default.EDIT_INBOXES, response.data);
-      commit(types.default.SET_INBOXES_UI_FLAG, { isUpdating: false });
-    } catch (error) {
-      commit(types.default.SET_INBOXES_UI_FLAG, { isUpdating: false });
-      throw new Error(error);
-    }
-  },
-  updateAutoAssignment: async ({ commit }, { id, ...inboxParams }) => {
-    commit(types.default.SET_INBOXES_UI_FLAG, { isUpdatingAutoAssignment: true });
+  updateInbox: async ({ commit }, { id, ...inboxParams }) => {
+    commit(types.default.SET_INBOXES_UI_FLAG, {
+      isUpdatingAutoAssignment: true,
+    });
     try {
       const response = await InboxesAPI.update(id, inboxParams);
       commit(types.default.EDIT_INBOXES, response.data);
-      commit(types.default.SET_INBOXES_UI_FLAG, { isUpdatingAutoAssignment: false });
+      commit(types.default.SET_INBOXES_UI_FLAG, {
+        isUpdatingAutoAssignment: false,
+      });
     } catch (error) {
-      commit(types.default.SET_INBOXES_UI_FLAG, { isUpdatingAutoAssignment: false });
+      commit(types.default.SET_INBOXES_UI_FLAG, {
+        isUpdatingAutoAssignment: false,
+      });
       throw new Error(error);
     }
   },

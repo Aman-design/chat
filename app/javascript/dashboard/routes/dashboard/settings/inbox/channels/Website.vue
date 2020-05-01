@@ -5,16 +5,20 @@
       :header-content="$t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.DESC')"
     />
     <woot-loading-state
-      v-if="isCreating"
-      message="Creating Website Support Channel"
+      v-if="uiFlags.isCreating"
+      :message="$('INBOX_MGMT.ADD.WEBSITE_CHANNEL.LOADING_MESSAGE')"
     >
     </woot-loading-state>
-    <form v-if="!isCreating" class="row" @submit.prevent="createChannel()">
+    <form
+      v-if="!uiFlags.isCreating"
+      class="row"
+      @submit.prevent="createChannel()"
+    >
       <div class="medium-12 columns">
         <label>
           {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_NAME.LABEL') }}
           <input
-            v-model.trim="websiteName"
+            v-model.trim="inboxName"
             type="text"
             :placeholder="
               $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_NAME.PLACEHOLDER')
@@ -26,10 +30,58 @@
         <label>
           {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.LABEL') }}
           <input
-            v-model.trim="websiteUrl"
+            v-model.trim="channelWebsiteUrl"
             type="text"
             :placeholder="
               $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.PLACEHOLDER')
+            "
+          />
+        </label>
+      </div>
+      <div class="medium-12 columns">
+        <label>
+          {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WELCOME_TITLE.LABEL') }}
+          <input
+            v-model.trim="channelWelcomeTitle"
+            type="text"
+            :placeholder="
+              $t(
+                'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WELCOME_TITLE.PLACEHOLDER'
+              )
+            "
+          />
+        </label>
+      </div>
+      <div class="medium-12 columns">
+        <label>
+          {{
+            $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WELCOME_TAGLINE.LABEL')
+          }}
+          <input
+            v-model.trim="channelWelcomeTagline"
+            type="text"
+            :placeholder="
+              $t(
+                'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WELCOME_TAGLINE.PLACEHOLDER'
+              )
+            "
+          />
+        </label>
+      </div>
+      <div class="medium-12 columns">
+        <label>
+          {{
+            $t(
+              'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_AGENT_AWAY_MESSAGE.LABEL'
+            )
+          }}
+          <input
+            v-model.trim="channelAgentAwayMessage"
+            type="text"
+            :placeholder="
+              $t(
+                'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_AGENT_AWAY_MESSAGE.PLACEHOLDER'
+              )
             "
           />
         </label>
@@ -38,14 +90,18 @@
       <div class="medium-12 columns">
         <label>
           {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.WIDGET_COLOR.LABEL') }}
-          <compact v-model="widgetColor" class="widget-color--selector" />
+          <compact
+            v-model="channelWidgetColor"
+            class="widget-color--selector"
+          />
         </label>
       </div>
 
       <div class="modal-footer">
         <div class="medium-12 columns">
           <woot-submit-button
-            :disabled="!websiteUrl || !websiteName"
+            :loading="uiFlags.isCreating"
+            :disabled="!channelWebsiteUrl || !inboxName"
             :button-text="$t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.SUBMIT_BUTTON')"
           />
         </div>
@@ -67,10 +123,12 @@ export default {
   },
   data() {
     return {
-      websiteName: '',
-      websiteUrl: '',
-      widgetColor: { hex: '#009CE0' },
-      isCreating: false,
+      inboxName: '',
+      channelWebsiteUrl: '',
+      channelWidgetColor: { hex: '#009CE0' },
+      channelWelcomeTitle: '',
+      channelWelcomeTagline: '',
+      channelAgentAwayMessage: '',
     };
   },
   computed: {
@@ -83,10 +141,14 @@ export default {
       const website = await this.$store.dispatch(
         'inboxes/createWebsiteChannel',
         {
-          website: {
-            website_name: this.websiteName,
-            website_url: this.websiteUrl,
-            widget_color: this.widgetColor.hex,
+          name: this.inboxName,
+          channel: {
+            type: 'web_widget',
+            website_url: this.channelWebsiteUrl,
+            widget_color: this.channelWidgetColor.hex,
+            welcome_title: this.channelWelcomeTitle,
+            welcome_tagline: this.channelWelcomeTagline,
+            agent_away_message: this.channelAgentAwayMessage,
           },
         }
       );

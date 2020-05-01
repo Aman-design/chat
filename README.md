@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://storage.googleapis.com/chatwoot-assets/woot-logo.svg" alt="Woot-logo" width="240">
+  <img src="https://s3.us-west-2.amazonaws.com/gh-assets.chatwoot.com/brand.svg" alt="Woot-logo" width="240">
 
   <div align="center">A simple and elegant live chat software</div>
   <div align="center">An opensource alternative to Intercom, Zendesk, Drift, Crisp etc.</div>
@@ -23,7 +23,7 @@ ___
   <a href="https://discord.gg/cJXdrwS"><img src="https://img.shields.io/badge/chat-Discord-violet?logo=discord" alt="Chat on Discord"></a>
 </p>
 
-![ChatUI progess](https://storage.googleapis.com/chatwoot-assets/dashboard-screen.png)
+![ChatUI progess](https://s3.us-west-2.amazonaws.com/gh-assets.chatwoot.com/chatwoot-dashboard-assets.png)
 
 ## Background
 
@@ -52,15 +52,9 @@ Follow this [link](https://www.chatwoot.com/docs/environment-variables) to under
 
 ## Docker
 
-You can use our official Docker image from [https://hub.docker.com/r/chatwoot/chatwoot](https://hub.docker.com/r/chatwoot/chatwoot)
-
-```bash
-docker pull chatwoot/chatwoot
-```
+Follow our [docker development guide](https://www.chatwoot.com/docs/installation-guide-docker) to develop and debug the application using `docker-compose`.
 
 Follow our [environment variables](https://www.chatwoot.com/docs/environment-variables/) guide to setup environment for Docker.
-
-Follow our [docker development guide](https://www.chatwoot.com/docs/installation-guide-docker) to develop and debug the application using docker composer.
 
 ## Contributors ✨
 

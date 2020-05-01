@@ -1,58 +1,141 @@
 <template>
-  <div class="agent-message">
-    <div class="avatar-wrap">
-      <thumbnail
-        v-if="showAvatar"
-        :src="avatarUrl"
-        size="24px"
-        :username="agentName"
-      />
+  <div class="agent-bubble">
+    <div class="agent-message">
+      <div class="avatar-wrap">
+        <thumbnail
+          v-if="message.showAvatar || hasRecordedResponse"
+          :src="avatarUrl"
+          size="24px"
+          :username="agentName"
+        />
+      </div>
+      <div class="message-wrap">
+        <AgentMessageBubble
+          v-if="!hasAttachments && shouldDisplayAgentMessage"
+          :content-type="contentType"
+          :message-content-attributes="messageContentAttributes"
+          :message-id="message.id"
+          :message-type="messageType"
+          :message="message.content"
+        />
+        <div v-if="hasAttachments" class="chat-bubble has-attachment agent">
+          <div v-for="attachment in message.attachments" :key="attachment.id">
+            <file-bubble
+              v-if="attachment.file_type !== 'image'"
+              :url="attachment.data_url"
+            />
+            <image-bubble
+              v-else
+              :url="attachment.data_url"
+              :thumb="attachment.thumb_url"
+              :readable-time="readableTime"
+            />
+          </div>
+        </div>
+        <p v-if="message.showAvatar || hasRecordedResponse" class="agent-name">
+          {{ agentName }}
+        </p>
+      </div>
     </div>
-    <div class="message-wrap">
-      <AgentMessageBubble
-        :content-type="contentType"
-        :message-content-attributes="messageContentAttributes"
-        :message-id="messageId"
-        :message-type="messageType"
-        :message="message"
-      />
-      <p v-if="showAvatar" class="agent-name">
-        {{ agentName }}
-      </p>
-    </div>
+
+    <UserMessage v-if="hasRecordedResponse" :message="responseMessage" />
   </div>
 </template>
 
 <script>
-import AgentMessageBubble from 'widget/components/AgentMessageBubble.vue';
-import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
+import UserMessage from 'widget/components/UserMessage';
+import AgentMessageBubble from 'widget/components/AgentMessageBubble';
+import timeMixin from 'dashboard/mixins/time';
+import ImageBubble from 'widget/components/ImageBubble';
+import FileBubble from 'widget/components/FileBubble';
+import Thumbnail from 'dashboard/components/widgets/Thumbnail';
+import { MESSAGE_TYPE } from 'widget/helpers/constants';
 
 export default {
   name: 'AgentMessage',
   components: {
     AgentMessageBubble,
+    ImageBubble,
     Thumbnail,
+    UserMessage,
+    FileBubble,
   },
+  mixins: [timeMixin],
   props: {
-    message: String,
-    avatarUrl: String,
-    agentName: String,
-    showAvatar: Boolean,
-    contentType: {
-      type: String,
-      default: '',
-    },
-    messageContentAttributes: {
+    message: {
       type: Object,
       default: () => {},
     },
-    messageType: {
-      type: Number,
-      default: 1,
+  },
+  computed: {
+    shouldDisplayAgentMessage() {
+      if (
+        this.contentType === 'input_select' &&
+        this.messageContentAttributes.submitted_values &&
+        !this.message.content
+      ) {
+        return false;
+      }
+      return true;
     },
-    messageId: {
-      type: Number,
-      default: 0,
+    hasAttachments() {
+      return !!(
+        this.message.attachments && this.message.attachments.length > 0
+      );
+    },
+    readableTime() {
+      const { created_at: createdAt = '' } = this.message;
+      return this.messageStamp(createdAt);
+    },
+    messageType() {
+      const { message_type: type = 1 } = this.message;
+      return type;
+    },
+    contentType() {
+      const { content_type: type = '' } = this.message;
+      return type;
+    },
+    messageContentAttributes() {
+      const { content_attributes: attribute = {} } = this.message;
+      return attribute;
+    },
+    agentName() {
+      if (this.message.message_type === MESSAGE_TYPE.TEMPLATE) {
+        return 'Bot';
+      }
+
+      return this.message.sender ? this.message.sender.name : 'Bot';
+    },
+    avatarUrl() {
+      // eslint-disable-next-line
+      const BotImage = require('dashboard/assets/images/chatwoot_bot.png')
+      if (this.message.message_type === MESSAGE_TYPE.TEMPLATE) {
+        return BotImage;
+      }
+
+      return this.message.sender ? this.message.sender.avatar_url : BotImage;
+    },
+    hasRecordedResponse() {
+      return (
+        this.messageContentAttributes.submitted_email ||
+        (this.messageContentAttributes.submitted_values &&
+          this.contentType !== 'form')
+      );
+    },
+    responseMessage() {
+      if (this.messageContentAttributes.submitted_email) {
+        return { content: this.messageContentAttributes.submitted_email };
+      }
+
+      if (this.messageContentAttributes.submitted_values) {
+        if (this.contentType === 'input_select') {
+          const [
+            selectionOption = {},
+          ] = this.messageContentAttributes.submitted_values;
+          return { content: selectionOption.title || selectionOption.value };
+        }
+      }
+      return '';
     },
   },
 };
@@ -61,7 +144,19 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 @import '~widget/assets/scss/variables.scss';
+
 .conversation-wrap {
+  .agent-bubble {
+    margin-bottom: $space-micro;
+    & + .agent-bubble {
+      .agent-message {
+        .chat-bubble {
+          border-top-left-radius: $space-smaller;
+        }
+      }
+    }
+  }
+
   .agent-message {
     align-items: flex-end;
     display: flex;
@@ -70,21 +165,14 @@ export default {
     margin: 0 0 $space-micro $space-small;
     max-width: 88%;
 
-    & + .agent-message {
-      margin-bottom: $space-micro;
-
-      .chat-bubble {
-        border-top-left-radius: $space-smaller;
-      }
-    }
-
     & + .user-message {
-      margin-top: $space-normal;
+      margin-top: $space-one;
     }
 
     .avatar-wrap {
       height: $space-medium;
       width: $space-medium;
+      flex-shrink: 0;
 
       .user-thumbnail-box {
         margin-top: -$space-large;
@@ -105,6 +193,11 @@ export default {
     font-weight: $font-weight-medium;
     margin: $space-small 0;
     padding-left: $space-micro;
+  }
+
+  .has-attachment {
+    padding: 0;
+    overflow: hidden;
   }
 }
 </style>

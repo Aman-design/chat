@@ -46,7 +46,7 @@ import getEmojiSVG from '../emoji/utils';
 import conversationMixin from '../../../mixins/conversations';
 import timeMixin from '../../../mixins/time';
 import router from '../../../routes';
-import { frontendURL } from '../../../helper/URLHelper';
+import { frontendURL, conversationUrl } from '../../../helper/URLHelper';
 
 export default {
   components: {
@@ -74,6 +74,7 @@ export default {
       currentChat: 'getSelectedChat',
       inboxesList: 'inboxes/getInboxes',
       activeInbox: 'getSelectedInbox',
+      currentUser: 'getCurrentUser',
     }),
 
     isActiveChat() {
@@ -95,23 +96,29 @@ export default {
 
   methods: {
     cardClick(chat) {
-      router.push({
-        path: frontendURL(`conversations/${chat.id}`),
-      });
+      const { activeInbox } = this;
+      const path = conversationUrl(
+        this.currentUser.account_id,
+        activeInbox,
+        chat.id
+      );
+      router.push({ path: frontendURL(path) });
     },
     extractMessageText(chatItem) {
-      if (chatItem.content) {
-        return chatItem.content;
+      const { content, attachments } = chatItem;
+
+      if (content) {
+        return content;
       }
-      let fileType = '';
-      if (chatItem.attachment) {
-        fileType = chatItem.attachment.file_type;
-      } else {
+      if (!attachments) {
         return ' ';
       }
+
+      const [attachment] = attachments;
+      const { file_type: fileType } = attachment;
       const key = `CHAT_LIST.ATTACHMENTS.${fileType}`;
       return `
-        <i class="${this.$t(`${key}.ICON`)}"></i>
+        <i class="small-icon ${this.$t(`${key}.ICON`)}"></i>
         ${this.$t(`${key}.CONTENT`)}
       `;
     },

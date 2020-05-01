@@ -23,6 +23,18 @@
         @click="onClick()"
         @blur="onBlur()"
       />
+      <file-upload
+        v-if="showFileUpload"
+        :size="4096 * 4096"
+        accept="jpg,jpeg,png,mp3,ogg,amr,pdf,mp4"
+        @input-file="onFileUpload"
+      >
+        <i
+          v-if="!isUploading.image"
+          class="icon ion-android-attach attachment"
+        />
+        <woot-spinner v-if="isUploading.image" />
+      </file-upload>
       <i
         class="icon ion-happy-outline"
         :class="{ active: showEmojiPicker }"
@@ -33,14 +45,18 @@
     <div class="reply-box__bottom">
       <ul class="tabs">
         <li class="tabs-title" :class="{ 'is-active': !isPrivate }">
-          <a href="#" @click="makeReply">Reply</a>
+          <a href="#" @click="makeReply">{{
+            $t('CONVERSATION.REPLYBOX.REPLY')
+          }}</a>
         </li>
         <li class="tabs-title is-private" :class="{ 'is-active': isPrivate }">
-          <a href="#" @click="makePrivate">Private Note</a>
+          <a href="#" @click="makePrivate">{{
+            $t('CONVERSATION.REPLYBOX.PRIVATE_NOTE')
+          }}</a>
         </li>
         <li v-if="message.length" class="tabs-title message-length">
-          <a :class="{ 'message-error': message.length > 620 }">
-            {{ message.length }} / 640
+          <a :class="{ 'message-error': message.length > maxLength - 40 }">
+            {{ message.length }} / {{ maxLength }}
           </a>
         </li>
       </ul>
@@ -49,16 +65,12 @@
         class="button send-button"
         :disabled="disableButton()"
         :class="{
-          disabled: message.length === 0 || message.length > 640,
+          disabled: message.length === 0 || message.length > maxLength,
           warning: isPrivate,
         }"
         @click="sendMessage"
       >
-        {{
-          isPrivate
-            ? $t('CONVERSATION.REPLYBOX.CREATE')
-            : $t('CONVERSATION.REPLYBOX.SEND')
-        }}
+        {{ replyButtonLabel }}
         <i
           class="icon"
           :class="{
@@ -77,11 +89,17 @@
 import { mapGetters } from 'vuex';
 import emojione from 'emojione';
 import { mixin as clickaway } from 'vue-clickaway';
+import FileUpload from 'vue-upload-component';
 
 import EmojiInput from '../emoji/EmojiInput';
 import CannedResponse from './CannedResponse';
 
 export default {
+  components: {
+    EmojiInput,
+    CannedResponse,
+    FileUpload,
+  },
   mixins: [clickaway],
   data() {
     return {
@@ -89,6 +107,11 @@ export default {
       isPrivate: false,
       showEmojiPicker: false,
       showCannedResponsesList: false,
+      isUploading: {
+        audio: false,
+        video: false,
+        image: false,
+      },
     };
   },
   computed: {
@@ -103,10 +126,37 @@ export default {
       } = this.currentChat;
       return channel;
     },
-  },
-  components: {
-    EmojiInput,
-    CannedResponse,
+    conversationType() {
+      const { additional_attributes: additionalAttributes } = this.currentChat;
+      const type = additionalAttributes ? additionalAttributes.type : '';
+      return type || '';
+    },
+    maxLength() {
+      if (this.channelType === 'Channel::FacebookPage') {
+        return 640;
+      }
+      if (this.channelType === 'Channel::TwitterProfile') {
+        if (this.conversationType === 'tweet') {
+          return 280;
+        }
+      }
+      return 10000;
+    },
+    showFileUpload() {
+      return (
+        this.channelType === 'Channel::WebWidget' ||
+        this.channelType === 'Channel::TwilioSms'
+      );
+    },
+    replyButtonLabel() {
+      if (this.isPrivate) {
+        return this.$t('CONVERSATION.REPLYBOX.CREATE');
+      }
+      if (this.conversationType === 'tweet') {
+        return this.$t('CONVERSATION.REPLYBOX.TWEET');
+      }
+      return this.$t('CONVERSATION.REPLYBOX.SEND');
+    },
   },
   watch: {
     message(val) {
@@ -155,21 +205,21 @@ export default {
     isEscape(e) {
       return e.keyCode === 27; // ESCAPE
     },
-    sendMessage() {
+    async sendMessage() {
       const isMessageEmpty = !this.message.replace(/\n/g, '').length;
-      if (isMessageEmpty) {
-        return;
-      }
+      if (isMessageEmpty) return;
+
       if (!this.showCannedResponsesList) {
-        this.$store
-          .dispatch('sendMessage', {
+        try {
+          await this.$store.dispatch('sendMessage', {
             conversationId: this.currentChat.id,
             message: this.message,
             private: this.isPrivate,
-          })
-          .then(() => {
-            this.$emit('scrollToMessage');
           });
+          this.$emit('scrollToMessage');
+        } catch (error) {
+          // Error
+        }
         this.clearMessage();
         this.hideEmojiPicker();
       }
@@ -246,6 +296,23 @@ export default {
         ? 'CONVERSATION.FOOTER.PRIVATE_MSG_INPUT'
         : 'CONVERSATION.FOOTER.MSG_INPUT';
       return placeHolder;
+    },
+
+    onFileUpload(file) {
+      if (!file) {
+        return;
+      }
+      this.isUploading.image = true;
+      this.$store
+        .dispatch('sendAttachment', [this.currentChat.id, { file: file.file }])
+        .then(() => {
+          this.isUploading.image = false;
+          this.$emit('scrollToMessage');
+        })
+        .catch(() => {
+          this.isUploading.image = false;
+          this.$emit('scrollToMessage');
+        });
     },
   },
 };

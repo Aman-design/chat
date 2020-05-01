@@ -19,6 +19,9 @@
 #
 
 class Inbox < ApplicationRecord
+  include Reportable
+  include Avatarable
+
   validates :account_id, presence: true
 
   belongs_to :account
@@ -33,7 +36,11 @@ class Inbox < ApplicationRecord
   has_many :members, through: :inbox_members, source: :user
   has_many :conversations, dependent: :destroy
   has_many :messages, through: :conversations
-  has_one :webhook, dependent: :destroy
+
+  has_one :agent_bot_inbox, dependent: :destroy
+  has_one :agent_bot, through: :agent_bot_inbox
+  has_many :webhooks, dependent: :destroy
+
   after_create :subscribe_webhook, if: :facebook?
   after_destroy :delete_round_robin_agents
 
@@ -58,6 +65,13 @@ class Inbox < ApplicationRecord
   def next_available_agent
     user_id = Redis::Alfred.rpoplpush(round_robin_key, round_robin_key)
     account.users.find_by(id: user_id)
+  end
+
+  def webhook_data
+    {
+      id: id,
+      name: name
+    }
   end
 
   private

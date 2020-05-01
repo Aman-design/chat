@@ -4,19 +4,29 @@ import ApiClient from '../ApiClient';
 
 class MessageApi extends ApiClient {
   constructor() {
-    super('conversations');
+    super('conversations', { accountScoped: true });
   }
 
   create({ conversationId, message, private: isPrivate }) {
     return axios.post(`${this.url}/${conversationId}/messages`, {
-      message,
+      content: message,
       private: isPrivate,
     });
   }
 
   getPreviousMessages({ conversationId, before }) {
-    return axios.get(`${this.url}/${conversationId}`, {
+    return axios.get(`${this.url}/${conversationId}/messages`, {
       params: { before },
+    });
+  }
+
+  sendAttachment([conversationId, { file }]) {
+    const formData = new FormData();
+    formData.append('attachments[]', file, file.name);
+    return axios({
+      method: 'post',
+      url: `${this.url}/${conversationId}/messages`,
+      data: formData,
     });
   }
 }

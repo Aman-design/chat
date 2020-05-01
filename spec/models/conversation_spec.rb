@@ -14,6 +14,11 @@ RSpec.describe Conversation, type: :model do
     it 'runs before_create callbacks' do
       expect(conversation.display_id).to eq(1)
     end
+
+    it 'creates a UUID for every conversation automatically' do
+      uuid_pattern = /[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}$/i
+      expect(conversation.uuid).to  match(uuid_pattern)
+    end
   end
 
   describe '.after_update' do
@@ -34,7 +39,7 @@ RSpec.describe Conversation, type: :model do
       new_assignee
 
       allow(Rails.configuration.dispatcher).to receive(:dispatch)
-      allow(AssignmentMailer).to receive(:conversation_assigned).and_return(assignment_mailer)
+      allow(AgentNotifications::ConversationNotificationsMailer).to receive(:conversation_assigned).and_return(assignment_mailer)
       allow(assignment_mailer).to receive(:deliver_later)
       Current.user = old_assignee
 
@@ -58,7 +63,7 @@ RSpec.describe Conversation, type: :model do
         .with(described_class::ASSIGNEE_CHANGED, kind_of(Time), conversation: conversation)
 
       # send_email_notification_to_assignee
-      expect(AssignmentMailer).to have_received(:conversation_assigned).with(conversation, new_assignee)
+      expect(AgentNotifications::ConversationNotificationsMailer).to have_received(:conversation_assigned).with(conversation, new_assignee)
 
       expect(assignment_mailer).to have_received(:deliver_later) if ENV.fetch('SMTP_ADDRESS', nil).present?
     end
@@ -117,10 +122,22 @@ RSpec.describe Conversation, type: :model do
     let(:agent) do
       create(:user, email: 'agent@example.com', account: conversation.account, role: :agent)
     end
+    let(:assignment_mailer) { double(deliver: true) }
 
     it 'assigns the agent to conversation' do
       expect(update_assignee).to eq(true)
       expect(conversation.reload.assignee).to eq(agent)
+    end
+
+    it 'does not send assignment mailer if notification setting is turned off' do
+      allow(AgentNotifications::ConversationNotificationsMailer).to receive(:conversation_assigned).and_return(assignment_mailer)
+
+      notification_setting = agent.notification_settings.first
+      notification_setting.unselect_all_email_flags
+      notification_setting.save!
+
+      expect(update_assignee).to eq(true)
+      expect(AgentNotifications::ConversationNotificationsMailer).not_to have_received(:conversation_assigned).with(conversation, agent)
     end
   end
 
@@ -214,6 +231,7 @@ RSpec.describe Conversation, type: :model do
     let(:conversation) { create(:conversation) }
     let(:expected_data) do
       {
+        additional_attributes: nil,
         meta: {
           sender: conversation.contact.push_event_data,
           assignee: conversation.assignee
@@ -221,7 +239,7 @@ RSpec.describe Conversation, type: :model do
         id: conversation.display_id,
         messages: [],
         inbox_id: conversation.inbox_id,
-        status: conversation.status_before_type_cast.to_i,
+        status: conversation.status,
         timestamp: conversation.created_at.to_i,
         user_last_seen_at: conversation.user_last_seen_at.to_i,
         agent_last_seen_at: conversation.agent_last_seen_at.to_i,
@@ -243,6 +261,15 @@ RSpec.describe Conversation, type: :model do
 
     it 'returns lock event payload' do
       expect(lock_event_data).to eq(id: 505, locked: false)
+    end
+  end
+
+  describe '#botinbox: when conversation created inside inbox with agent bot' do
+    let!(:bot_inbox) { create(:agent_bot_inbox) }
+    let(:conversation) { create(:conversation, inbox: bot_inbox.inbox) }
+
+    it 'returns conversation status as bot' do
+      expect(conversation.status).to eq('bot')
     end
   end
 end

@@ -1,5 +1,3 @@
-require 'open-uri'
-
 # This class creates both outgoing messages from chatwoot and echo outgoing messages based on the flag `outgoing_echo`
 # Assumptions
 # 1. Incase of an outgoing message which is echo, source_id will NOT be nil,
@@ -36,16 +34,14 @@ class Messages::MessageBuilder
     return if contact.present?
 
     @contact = Contact.create!(contact_params.except(:remote_avatar_url))
-    avatar_resource = LocalResource.new(contact_params[:remote_avatar_url])
-    @contact.avatar.attach(io: avatar_resource.file, filename: avatar_resource.tmp_filename, content_type: avatar_resource.encoding)
-
+    ContactAvatarJob.perform_later(@contact, contact_params[:remote_avatar_url]) if contact_params[:remote_avatar_url]
     @contact_inbox = ContactInbox.create(contact: contact, inbox: @inbox, source_id: @sender_id)
   end
 
   def build_message
     @message = conversation.messages.create!(message_params)
     (response.attachments || []).each do |attachment|
-      attachment_obj = @message.build_attachment(attachment_params(attachment).except(:remote_file_url))
+      attachment_obj = @message.attachments.new(attachment_params(attachment).except(:remote_file_url))
       attachment_obj.save!
       attach_file(attachment_obj, attachment_params(attachment)[:remote_file_url]) if attachment_params(attachment)[:remote_file_url]
     end

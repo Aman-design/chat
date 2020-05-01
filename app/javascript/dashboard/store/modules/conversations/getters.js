@@ -33,7 +33,7 @@ const getters = {
   getChatListLoadingStatus: ({ listLoadingStatus }) => listLoadingStatus,
   getAllMessagesLoaded(_state) {
     const [chat] = getSelectedChatConversation(_state);
-    return chat.allMessagesLoaded === undefined
+    return !chat || chat.allMessagesLoaded === undefined
       ? false
       : chat.allMessagesLoaded;
   },

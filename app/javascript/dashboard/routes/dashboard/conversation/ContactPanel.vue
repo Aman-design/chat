@@ -1,6 +1,9 @@
 <template>
   <div class="medium-3 bg-white contact--panel">
     <div class="contact--profile">
+      <span class="close-button" @click="onPanelToggle">
+        <i class="ion-close-round"></i>
+      </span>
       <div class="contact--info">
         <thumbnail
           :src="contact.thumbnail"
@@ -19,6 +22,13 @@
             class="contact--email"
           >
             {{ contact.email }}
+          </a>
+          <a
+            v-if="contact.phone_number"
+            :href="`tel:${contact.phone_number}`"
+            class="contact--email"
+          >
+            {{ contact.phone_number }}
           </a>
 
           <div
@@ -101,6 +111,10 @@ export default {
       type: [Number, String],
       required: true,
     },
+    onToggle: {
+      type: Function,
+      default: () => {},
+    },
   },
   computed: {
     currentConversationMetaData() {
@@ -152,6 +166,11 @@ export default {
       id: this.currentConversationMetaData.contact_id,
     });
   },
+  methods: {
+    onPanelToggle() {
+      this.onToggle();
+    },
+  },
 };
 </script>
 
@@ -165,8 +184,16 @@ export default {
   overflow-y: auto;
   background: white;
   overflow: auto;
+  position: relative;
 }
 
+.close-button {
+  position: absolute;
+  right: $space-slab;
+  top: $space-slab;
+  font-size: $font-size-default;
+  color: $color-heading;
+}
 .contact--profile {
   padding: $space-medium $space-normal 0 $space-medium;
   align-items: center;
@@ -191,7 +218,7 @@ export default {
   text-transform: capitalize;
 
   font-weight: $font-weight-bold;
-  font-size: $font-size-medium;
+  font-size: $font-size-default;
 }
 
 .contact--email {

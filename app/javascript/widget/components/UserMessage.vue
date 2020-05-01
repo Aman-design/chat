@@ -1,25 +1,67 @@
 <template>
   <div class="user-message">
-    <div class="message-wrap">
-      <UserMessageBubble :message="message" :status="status" />
+    <div class="message-wrap" :class="{ 'in-progress': isInProgress }">
+      <UserMessageBubble
+        v-if="showTextBubble"
+        :message="message.content"
+        :status="message.status"
+      />
+      <div v-if="hasAttachments" class="chat-bubble has-attachment user">
+        <div v-for="attachment in message.attachments" :key="attachment.id">
+          <file-bubble
+            v-if="attachment.file_type !== 'image'"
+            :url="attachment.data_url"
+            :is-in-progress="isInProgress"
+          />
+          <image-bubble
+            v-else
+            :url="attachment.data_url"
+            :thumb="attachment.thumb_url"
+            :readable-time="readableTime"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import UserMessageBubble from 'widget/components/UserMessageBubble.vue';
+import UserMessageBubble from 'widget/components/UserMessageBubble';
+import ImageBubble from 'widget/components/ImageBubble';
+import FileBubble from 'widget/components/FileBubble';
+import timeMixin from 'dashboard/mixins/time';
 
 export default {
   name: 'UserMessage',
   components: {
     UserMessageBubble,
+    ImageBubble,
+    FileBubble,
   },
+  mixins: [timeMixin],
   props: {
-    avatarUrl: String,
-    message: String,
-    status: {
-      type: String,
-      default: '',
+    message: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  computed: {
+    isInProgress() {
+      const { status = '' } = this.message;
+      return status === 'in_progress';
+    },
+    hasAttachments() {
+      return !!(
+        this.message.attachments && this.message.attachments.length > 0
+      );
+    },
+    showTextBubble() {
+      const { message } = this;
+      return !!message.content;
+    },
+    readableTime() {
+      const { created_at: createdAt = '' } = this.message;
+      return this.messageStamp(createdAt);
     },
   },
 };
@@ -50,6 +92,24 @@ export default {
     }
     .message-wrap {
       margin-right: $space-small;
+    }
+
+    .in-progress {
+      opacity: 0.6;
+    }
+  }
+
+  .has-attachment {
+    padding: 0;
+    overflow: hidden;
+  }
+  .user.has-attachment {
+    .icon-wrap {
+      color: $color-white;
+    }
+
+    .download {
+      opacity: 0.8;
     }
   }
 }

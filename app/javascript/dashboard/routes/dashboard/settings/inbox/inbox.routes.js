@@ -12,13 +12,17 @@ import { frontendURL } from '../../../../helper/URLHelper';
 export default {
   routes: [
     {
-      path: frontendURL('settings/inboxes'),
+      path: frontendURL('accounts/:accountId/settings/inboxes'),
       component: SettingsContent,
-      props: {
-        headerTitle: 'INBOX_MGMT.HEADER',
-        headerButtonText: 'SETTINGS.INBOXES.NEW_INBOX',
-        icon: 'ion-archive',
-        newButtonRoutes: ['settings_inbox_list'],
+      props: params => {
+        const showBackButton = params.name !== 'settings_inbox_list';
+        return {
+          headerTitle: 'INBOX_MGMT.HEADER',
+          headerButtonText: 'SETTINGS.INBOXES.NEW_INBOX',
+          icon: 'ion-archive',
+          newButtonRoutes: ['settings_inbox_list'],
+          showBackButton,
+        };
       },
       children: [
         {

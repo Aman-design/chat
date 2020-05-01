@@ -1,8 +1,8 @@
 module.exports = {
-  extends: ['airbnb/base', 'prettier', 'plugin:vue/recommended'],
+  extends: ['airbnb-base/legacy', 'prettier', 'plugin:vue/recommended'],
   parserOptions: {
     parser: 'babel-eslint',
-    ecmaVersion: 2017,
+    ecmaVersion: 2020,
     sourceType: 'module',
   },
   plugins: ['html', 'prettier', 'babel'],
@@ -24,10 +24,12 @@ module.exports = {
       'multiline': {
         'max': 1,
         'allowFirstLine': false
-      }
+      },
     }],
     'vue/html-self-closing': 'off',
-    "vue/no-v-html": 'off'
+    "vue/no-v-html": 'off',
+    'import/extensions': ['off']
+
   },
   settings: {
     'import/resolver': {

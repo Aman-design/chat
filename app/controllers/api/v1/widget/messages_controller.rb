@@ -10,19 +10,35 @@ class Api::V1::Widget::MessagesController < Api::V1::Widget::BaseController
 
   def create
     @message = conversation.messages.new(message_params)
-    @message.save!
-    render json: @message
+    @message.save
+    build_attachment
   end
 
   def update
-    @message.update!(input_submitted_email: contact_email)
-    update_contact(contact_email)
-    head :no_content
+    if @message.content_type == 'input_email'
+      @message.update!(submitted_email: contact_email)
+      update_contact(contact_email)
+    else
+      @message.update!(message_update_params[:message])
+    end
   rescue StandardError => e
     render json: { error: @contact.errors, message: e.message }.to_json, status: 500
   end
 
   private
+
+  def build_attachment
+    return if params[:message][:attachments].blank?
+
+    params[:message][:attachments].each do |uploaded_attachment|
+      attachment = @message.attachments.new(
+        account_id: @message.account_id,
+        file_type: helpers.file_type(uploaded_attachment&.content_type)
+      )
+      attachment.file.attach(uploaded_attachment)
+    end
+    @message.save!
+  end
 
   def set_conversation
     @conversation = ::Conversation.create!(conversation_params) if conversation.nil?
@@ -31,9 +47,10 @@ class Api::V1::Widget::MessagesController < Api::V1::Widget::BaseController
   def message_params
     {
       account_id: conversation.account_id,
+      contact_id: @contact.id,
+      content: permitted_params[:message][:content],
       inbox_id: conversation.inbox_id,
-      message_type: :incoming,
-      content: permitted_params[:message][:content]
+      message_type: :incoming
     }
   end
 
@@ -85,7 +102,11 @@ class Api::V1::Widget::MessagesController < Api::V1::Widget::BaseController
   def update_contact(email)
     contact_with_email = @account.contacts.find_by(email: email)
     if contact_with_email
-      ::ContactMergeAction.new(account: @account, base_contact: contact_with_email, mergee_contact: @contact).perform
+      @contact = ::ContactMergeAction.new(
+        account: @account,
+        base_contact: contact_with_email,
+        mergee_contact: @contact
+      ).perform
     else
       @contact.update!(
         email: email,
@@ -100,6 +121,10 @@ class Api::V1::Widget::MessagesController < Api::V1::Widget::BaseController
 
   def contact_name
     contact_email.split('@')[0]
+  end
+
+  def message_update_params
+    params.permit(message: [submitted_values: [:name, :title, :value]])
   end
 
   def permitted_params

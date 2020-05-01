@@ -37,6 +37,10 @@ public/packs*
 *.swo
 *.un~
 .jest-cache
+
+#VS Code files
+.vscode
+
 # ignore jetbrains IDE files
 .idea
 
@@ -49,3 +53,5 @@ coverage
 # ignore packages
 node_modules
 package-lock.json
+
+*.dump

@@ -1,39 +1,48 @@
 <template>
   <header class="header-expanded">
-    <div>
-      <!-- <img
-        class="logo"
-        src="http://www.hennigcompany.com/wp-content/uploads/2014/06/starbucks-logo.png"
-      /> -->
-      <h2 class="title">
-        {{ introHeading }}
-      </h2>
-      <p class="body">
-        {{ introBody }}
-      </p>
-    </div>
+    <img v-if="avatarUrl" class="logo" :src="avatarUrl" />
+    <span class="close close-button" @click="closeWindow"></span>
+    <h2 class="title">
+      {{ introHeading }}
+    </h2>
+    <p class="body">
+      {{ introBody }}
+    </p>
   </header>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import { IFrameHelper } from 'widget/helpers/utils';
 
 export default {
   name: 'ChatHeaderExpanded',
+  props: {
+    avatarUrl: {
+      type: String,
+      default: '',
+    },
+    introHeading: {
+      type: String,
+      default: '',
+    },
+    introBody: {
+      type: String,
+      default: '',
+    },
+  },
   computed: {
     ...mapGetters({
       widgetColor: 'appConfig/getWidgetColor',
     }),
   },
-  props: {
-    introHeading: {
-      type: String,
-      default: 'Hi there ! 🙌🏼',
-    },
-    introBody: {
-      type: String,
-      default:
-        'We make it simple to connect with us. Ask us anything, or share your feedback.',
+  methods: {
+    closeWindow() {
+      if (IFrameHelper.isIFrame()) {
+        IFrameHelper.sendMessage({
+          event: 'toggleBubble',
+        });
+      }
     },
   },
 };
@@ -44,21 +53,28 @@ export default {
 @import '~widget/assets/scss/mixins.scss';
 
 .header-expanded {
-  padding: $space-larger $space-medium $space-large;
+  padding: $space-large $space-medium $space-large;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
 
   .logo {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
   }
 
+  .close {
+    position: absolute;
+    right: $space-medium;
+    top: $space-medium;
+    display: none;
+  }
   .title {
     color: $color-heading;
     font-size: $font-size-mega;
     font-weight: $font-weight-normal;
     margin-bottom: $space-slab;
-    margin-top: $space-large;
+    margin-top: $space-medium;
   }
 
   .body {

@@ -9,8 +9,10 @@
     "CLICK_HERE": "Click here",
     "LOADING_INBOXES": "Loading inboxes",
     "LOADING_CONVERSATIONS": "Loading Conversations",
+    "DOWNLOAD": "Download",
     "HEADER": {
       "RESOLVE_ACTION": "Resolve",
+      "REOPEN_ACTION": "Reopen",
       "OPEN": "More",
       "CLOSE": "Close",
       "DETAILS": "details"
@@ -20,8 +22,11 @@
       "PRIVATE_MSG_INPUT": "Shift + enter for new line. This will be visible only to Agents"
     },
     "REPLYBOX": {
+      "REPLY": "Reply",
+      "PRIVATE_NOTE": "Private Note",
       "SEND": "Send",
-      "CREATE": "Add Note"
+      "CREATE": "Add Note",
+      "TWEET": "Tweet"
     },
     "VISIBLE_TO_AGENTS": "Private Note: Only visible to you and your team",
     "CHANGE_STATUS": "Conversation status changed",

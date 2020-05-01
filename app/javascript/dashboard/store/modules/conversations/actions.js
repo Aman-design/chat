@@ -7,7 +7,16 @@ import FBChannel from '../../../api/channel/fbChannel';
 
 // actions
 const actions = {
-  fetchAllConversations: async ({ commit }, params) => {
+  getConversation: async ({ commit }, conversationId) => {
+    try {
+      const response = await ConversationApi.show(conversationId);
+      commit(types.default.ADD_CONVERSATION, response.data);
+    } catch (error) {
+      // Ignore error
+    }
+  },
+
+  fetchAllConversations: async ({ commit, dispatch }, params) => {
     commit(types.default.SET_LIST_LOADING_STATUS);
     try {
       const response = await ConversationApi.get(params);
@@ -16,6 +25,21 @@ const actions = {
       commit(types.default.SET_ALL_CONVERSATION, chatList);
       commit(types.default.SET_CONV_TAB_META, metaData);
       commit(types.default.CLEAR_LIST_LOADING_STATUS);
+      dispatch(
+        'conversationPage/setCurrentPage',
+        {
+          filter: params.assigneeType,
+          page: params.page,
+        },
+        { root: true }
+      );
+      if (!chatList.length) {
+        dispatch(
+          'conversationPage/setEndReached',
+          { filter: params.assigneeType },
+          { root: true }
+        );
+      }
     } catch (error) {
       // Handle error
     }
@@ -117,8 +141,19 @@ const actions = {
     commit(types.default.ADD_MESSAGE, message);
   },
 
-  addConversation({ commit }, conversation) {
-    commit(types.default.ADD_CONVERSATION, conversation);
+  updateMessage({ commit }, message) {
+    commit(types.default.ADD_MESSAGE, message);
+  },
+
+  addConversation({ commit, state }, conversation) {
+    const { currentInbox } = state;
+    if (!currentInbox || Number(currentInbox) === conversation.inbox_id) {
+      commit(types.default.ADD_CONVERSATION, conversation);
+    }
+  },
+
+  updateConversation({ commit }, conversation) {
+    commit(types.default.UPDATE_CONVERSATION, conversation);
   },
 
   toggleTyping: async ({ commit }, { status, inboxId, contactId }) => {
@@ -160,6 +195,15 @@ const actions = {
 
   setActiveInbox({ commit }, inboxId) {
     commit(types.default.SET_ACTIVE_INBOX, inboxId);
+  },
+
+  sendAttachment: async ({ commit }, data) => {
+    try {
+      const response = await MessageApi.sendAttachment(data);
+      commit(types.default.SEND_MESSAGE, response.data);
+    } catch (error) {
+      // Handle error
+    }
   },
 };
 

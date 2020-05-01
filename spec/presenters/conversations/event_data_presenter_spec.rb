@@ -13,6 +13,7 @@ RSpec.describe Conversations::EventDataPresenter do
   describe '#push_data' do
     let(:expected_data) do
       {
+        additional_attributes: nil,
         meta: {
           sender: conversation.contact.push_event_data,
           assignee: conversation.assignee
@@ -20,7 +21,7 @@ RSpec.describe Conversations::EventDataPresenter do
         id: conversation.display_id,
         messages: [],
         inbox_id: conversation.inbox_id,
-        status: conversation.status_before_type_cast.to_i,
+        status: conversation.status,
         timestamp: conversation.created_at.to_i,
         user_last_seen_at: conversation.user_last_seen_at.to_i,
         agent_last_seen_at: conversation.agent_last_seen_at.to_i,

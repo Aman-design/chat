@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.6.5'
+ruby '2.7.0'
 
 ##-- base gems for rails --##
 gem 'rack-cors', require: 'rack/cors'
@@ -17,6 +17,7 @@ gem 'jbuilder'
 gem 'kaminari'
 gem 'responders'
 gem 'rest-client'
+gem 'telephone_number'
 gem 'time_diff'
 gem 'tzinfo-data'
 gem 'valid_email2'
@@ -25,11 +26,12 @@ gem 'uglifier'
 
 ##-- for active storage --##
 gem 'aws-sdk-s3', require: false
-gem 'azure-storage', require: false
+gem 'azure-storage-blob', require: false
 gem 'google-cloud-storage', require: false
 gem 'mini_magick'
 
 ##-- gems for database --#
+gem 'groupdate'
 gem 'pg'
 gem 'redis'
 gem 'redis-namespace'
@@ -61,9 +63,9 @@ gem 'chargebee'
 ##--- gems for channels ---##
 gem 'facebook-messenger'
 gem 'telegram-bot-ruby'
+gem 'twilio-ruby', '~> 5.32.0'
 # twitty will handle subscription of twitter account events
 gem 'twitty', git: 'https://github.com/chatwoot/twitty'
-
 # facebook client
 gem 'koala'
 # Random name generator
@@ -78,11 +80,17 @@ gem 'sentry-raven'
 ##-- background job processing --##
 gem 'sidekiq'
 
+##-- used for single column multiple binary flags in notification settings/feature flagging --##
+gem 'flag_shih_tzu'
+
 group :development do
   gem 'annotate'
   gem 'bullet'
   gem 'letter_opener'
   gem 'web-console'
+
+  # used in swagger build
+  gem 'json_refs', git: 'https://github.com/tzmfreedom/json_refs', ref: 'e32deb0'
 end
 
 group :development, :test do
@@ -93,7 +101,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'listen'
-  gem 'mock_redis'
+  gem 'mock_redis', git: 'https://github.com/sds/mock_redis', ref: '16d00789f0341a3aac35126c0ffe97a596753ff9'
   gem 'pry-rails'
   gem 'rspec-rails', '~> 4.0.0.beta2'
   gem 'rubocop', require: false

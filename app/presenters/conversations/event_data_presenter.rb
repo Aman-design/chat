@@ -6,10 +6,11 @@ class Conversations::EventDataPresenter < SimpleDelegator
   def push_data
     {
       id: display_id,
+      additional_attributes: additional_attributes,
       inbox_id: inbox_id,
       messages: push_messages,
       meta: push_meta,
-      status: status_before_type_cast.to_i,
+      status: status,
       unread_count: unread_incoming_messages.count,
       **push_timestamps
     }

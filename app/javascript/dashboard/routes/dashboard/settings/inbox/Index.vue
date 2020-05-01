@@ -7,7 +7,7 @@
           {{ $t('INBOX_MGMT.LIST.404') }}
           <router-link
             v-if="isAdmin()"
-            :to="frontendURL('settings/inboxes/new')"
+            :to="addAccountScoping('settings/inboxes/new')"
           >
             {{ $t('SETTINGS.INBOXES.NEW_INBOX') }}
           </router-link>
@@ -39,12 +39,20 @@
                 <span v-if="item.channel_type === 'Channel::WebWidget'">
                   Website
                 </span>
+                <span v-if="item.channel_type === 'Channel::TwitterProfile'">
+                  Twitter
+                </span>
+                <span v-if="item.channel_type === 'Channel::TwilioSms'">
+                  Twilio SMS
+                </span>
               </td>
 
               <!-- Action Buttons -->
               <td>
                 <div class="button-wrapper">
-                  <router-link :to="`/app/settings/inboxes/${item.id}`">
+                  <router-link
+                    :to="addAccountScoping(`settings/inboxes/${item.id}`)"
+                  >
                     <woot-submit-button
                       v-if="isAdmin()"
                       :button-text="$t('INBOX_MGMT.SETTINGS')"
@@ -97,14 +105,15 @@ import { mapGetters } from 'vuex';
 import Settings from './Settings';
 import DeleteInbox from './DeleteInbox';
 import adminMixin from '../../../../mixins/isAdmin';
-import { frontendURL } from '../../../../helper/URLHelper';
+import auth from '../../../../api/auth';
+import accountMixin from '../../../../mixins/account';
 
 export default {
   components: {
     Settings,
     DeleteInbox,
   },
-  mixins: [adminMixin],
+  mixins: [adminMixin, accountMixin],
   data() {
     return {
       loading: {},
@@ -132,6 +141,9 @@ export default {
       return `${this.$t('INBOX_MGMT.DELETE.CONFIRM.MESSAGE')} ${
         this.selectedInbox.name
       } ?`;
+    },
+    accountId() {
+      return auth.getCurrentUser().account_id;
     },
   },
   methods: {
@@ -170,7 +182,6 @@ export default {
       this.showDeletePopup = false;
       this.selectedInbox = {};
     },
-    frontendURL,
   },
 };
 </script>

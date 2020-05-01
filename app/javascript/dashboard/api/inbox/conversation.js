@@ -3,15 +3,16 @@ import ApiClient from '../ApiClient';
 
 class ConversationApi extends ApiClient {
   constructor() {
-    super('conversations');
+    super('conversations', { accountScoped: true });
   }
 
-  get({ inboxId, status, assigneeType }) {
+  get({ inboxId, status, assigneeType, page }) {
     return axios.get(this.url, {
       params: {
         inbox_id: inboxId,
         status,
-        assignee_type_id: assigneeType,
+        assignee_type: assigneeType,
+        page,
       },
     });
   }

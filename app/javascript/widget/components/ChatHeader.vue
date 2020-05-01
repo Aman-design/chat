@@ -1,9 +1,12 @@
 <template>
   <header class="header-collapsed">
-    <h2 class="title">
-      {{ title }}
-    </h2>
-    <span class="close" @click="closeWindow"></span>
+    <div class="header-branding">
+      <img v-if="avatarUrl" :src="avatarUrl" alt="avatar" />
+      <h2 class="title">
+        {{ title }}
+      </h2>
+    </div>
+    <span class="close-button" @click="closeWindow"></span>
   </header>
 </template>
 
@@ -13,16 +16,20 @@ import { IFrameHelper } from 'widget/helpers/utils';
 
 export default {
   name: 'ChatHeader',
-  computed: {
-    ...mapGetters({
-      widgetColor: 'appConfig/getWidgetColor',
-    }),
-  },
   props: {
+    avatarUrl: {
+      type: String,
+      default: '',
+    },
     title: {
       type: String,
       default: '',
     },
+  },
+  computed: {
+    ...mapGetters({
+      widgetColor: 'appConfig/getWidgetColor',
+    }),
   },
   methods: {
     closeWindow() {
@@ -48,32 +55,25 @@ export default {
   box-sizing: border-box;
   color: $color-white;
 
+  .header-branding {
+    display: flex;
+    align-items: center;
+  }
+
   .title {
     font-size: $font-size-large;
     font-weight: $font-weight-medium;
     color: $color-heading;
   }
 
-  .close {
-    position: relative;
+  img {
+    height: 24px;
+    width: 24px;
     margin-right: $space-small;
+  }
 
-    &:before,
-    &:after {
-      position: absolute;
-      left: 0;
-      top: $space-smaller;
-      content: ' ';
-      height: $space-normal;
-      width: 2px;
-      background-color: $color-heading;
-    }
-    &:before {
-      transform: rotate(45deg);
-    }
-    &:after {
-      transform: rotate(-45deg);
-    }
+  .close-button {
+    display: none;
   }
 }
 </style>

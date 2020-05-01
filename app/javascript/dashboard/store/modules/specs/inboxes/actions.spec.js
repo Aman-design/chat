@@ -70,49 +70,39 @@ describe('#actions', () => {
     });
   });
 
-  describe('#updateWebsiteChannel', () => {
+  describe('#updateInbox', () => {
     it('sends correct actions if API is success', async () => {
-      axios.patch.mockResolvedValue({ data: inboxList[0] });
-      await actions.updateWebsiteChannel({ commit }, inboxList[0]);
-      expect(commit.mock.calls).toEqual([
-        [types.default.SET_INBOXES_UI_FLAG, { isUpdating: true }],
-        [types.default.EDIT_INBOXES, inboxList[0]],
-        [types.default.SET_INBOXES_UI_FLAG, { isUpdating: false }],
-      ]);
-    });
-    it('sends correct actions if API is error', async () => {
-      axios.patch.mockRejectedValue({ message: 'Incorrect header' });
-      await expect(
-        actions.updateWebsiteChannel({ commit }, inboxList[0])
-      ).rejects.toThrow(Error);
-      expect(commit.mock.calls).toEqual([
-        [types.default.SET_INBOXES_UI_FLAG, { isUpdating: true }],
-        [types.default.SET_INBOXES_UI_FLAG, { isUpdating: false }],
-      ]);
-    });
-  });
-  
-  describe('#updateAutoAssignment', () => {
-    it('sends correct actions if API is success', async () => {
-      let updatedInbox = inboxList[0];
+      const updatedInbox = inboxList[0];
       updatedInbox.enable_auto_assignment = false;
 
       axios.patch.mockResolvedValue({ data: updatedInbox });
-      await actions.updateAutoAssignment({ commit }, { id: updatedInbox.id, inbox: { enable_auto_assignment: false} });
+      await actions.updateInbox(
+        { commit },
+        { id: updatedInbox.id, inbox: { enable_auto_assignment: false } }
+      );
       expect(commit.mock.calls).toEqual([
         [types.default.SET_INBOXES_UI_FLAG, { isUpdatingAutoAssignment: true }],
         [types.default.EDIT_INBOXES, updatedInbox],
-        [types.default.SET_INBOXES_UI_FLAG, { isUpdatingAutoAssignment: false }],
+        [
+          types.default.SET_INBOXES_UI_FLAG,
+          { isUpdatingAutoAssignment: false },
+        ],
       ]);
     });
     it('sends correct actions if API is error', async () => {
       axios.patch.mockRejectedValue({ message: 'Incorrect header' });
       await expect(
-        actions.updateAutoAssignment({ commit }, { id: inboxList[0].id, inbox: { enable_auto_assignment: false} })
+        actions.updateInbox(
+          { commit },
+          { id: inboxList[0].id, inbox: { enable_auto_assignment: false } }
+        )
       ).rejects.toThrow(Error);
       expect(commit.mock.calls).toEqual([
         [types.default.SET_INBOXES_UI_FLAG, { isUpdatingAutoAssignment: true }],
-        [types.default.SET_INBOXES_UI_FLAG, { isUpdatingAutoAssignment: false }],
+        [
+          types.default.SET_INBOXES_UI_FLAG,
+          { isUpdatingAutoAssignment: false },
+        ],
       ]);
     });
   });

@@ -24,7 +24,7 @@ export default {
       }).then(res => {
         window.location = res.data.redirect_url;
       }).catch(res => {
-        window.location = res.data.redirect_url;
+        window.location = '/';
       });
     }
   }

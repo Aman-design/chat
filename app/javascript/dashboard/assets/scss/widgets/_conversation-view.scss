@@ -31,25 +31,35 @@
   }
 
   .image {
-    @include flex;
-    align-items: flex-end;
-    justify-content: center;
-    text-align: center;
-
-    img {
-      @include padding($space-small);
-      max-height: 30rem;
-      max-width: 20rem;
-    }
+    cursor: pointer;
+    position: relative;
 
     .time {
-      margin-left: -$space-large;
+      bottom: $space-smaller;
+      color: $color-white;
+      position: absolute;
+      right: $space-small;
       white-space: nowrap;
     }
 
+    .modal-container {
+      text-align: center;
+    }
+
     .modal-image {
-      max-height: 80%;
       max-width: 80%;
+    }
+
+    &::before {
+      $color-black: #000;
+      background-image: linear-gradient(-180deg, transparent 3%, $color-black 70%);
+      bottom: 0;
+      content: '';
+      height: 20%;
+      left: 0;
+      opacity: .8;
+      position: absolute;
+      width: 100%;
     }
   }
 
@@ -82,6 +92,21 @@
   @include flex;
   flex-direction: column;
 
+  .load-more-conversations {
+    font-size: $font-size-small;
+    padding: $space-normal;
+    width: 100%;
+  }
+
+  .end-of-list-text {
+    padding: $space-normal;
+  }
+
+  .conversations-list {
+    @include flex-weight(1);
+    @include scroll-on-hover;
+  }
+
   .chat-list__top {
     @include flex;
     @include padding($space-normal $zero $space-small $zero);
@@ -108,10 +133,7 @@
     }
   }
 
-  .conversations-list {
-    @include flex-weight(1);
-    @include scroll-on-hover;
-  }
+
 
   .content-box {
     text-align: center;
@@ -169,7 +191,7 @@
   // Firefox flexbox fix
   height: 100%;
   margin-bottom: $space-small;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   li {
     @include flex;

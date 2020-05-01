@@ -1,17 +1,23 @@
 /* eslint-disable no-param-reassign */
 import Vue from 'vue';
-import { sendMessageAPI, getConversationAPI } from 'widget/api/conversation';
+import {
+  sendMessageAPI,
+  getConversationAPI,
+  sendAttachmentAPI,
+} from 'widget/api/conversation';
 import { MESSAGE_TYPE } from 'widget/helpers/constants';
+import { playNotificationAudio } from 'shared/helpers/AudioNotificationHelper';
 import getUuid from '../../helpers/uuid';
 import DateHelper from '../../../shared/helpers/DateHelper';
 
 const groupBy = require('lodash.groupby');
 
-export const createTemporaryMessage = content => {
+export const createTemporaryMessage = ({ attachments, content }) => {
   const timestamp = new Date().getTime() / 1000;
   return {
     id: getUuid(),
     content,
+    attachments,
     status: 'in_progress',
     created_at: timestamp,
     message_type: MESSAGE_TYPE.INCOMING,
@@ -77,8 +83,31 @@ export const getters = {
 export const actions = {
   sendMessage: async ({ commit }, params) => {
     const { content } = params;
-    commit('pushMessageToConversation', createTemporaryMessage(content));
+    commit('pushMessageToConversation', createTemporaryMessage({ content }));
     await sendMessageAPI(content);
+  },
+
+  sendAttachment: async ({ commit }, params) => {
+    const {
+      attachment: { thumbUrl, fileType },
+    } = params;
+    const attachment = {
+      thumb_url: thumbUrl,
+      data_url: thumbUrl,
+      file_type: fileType,
+      status: 'in_progress',
+    };
+    const tempMessage = createTemporaryMessage({ attachments: [attachment] });
+    commit('pushMessageToConversation', tempMessage);
+    try {
+      const { data } = await sendAttachmentAPI(params);
+      commit('updateAttachmentMessageStatus', {
+        message: data,
+        tempId: tempMessage.id,
+      });
+    } catch (error) {
+      // Show error
+    }
   },
 
   fetchOldConversations: async ({ commit }, { before } = {}) => {
@@ -93,6 +122,14 @@ export const actions = {
   },
 
   addMessage({ commit }, data) {
+    if (data.message_type === MESSAGE_TYPE.OUTGOING) {
+      playNotificationAudio();
+    }
+
+    commit('pushMessageToConversation', data);
+  },
+
+  updateMessage({ commit }, data) {
     commit('pushMessageToConversation', data);
   },
 };
@@ -121,6 +158,18 @@ export const mutations = {
     }
   },
 
+  updateAttachmentMessageStatus($state, { message, tempId }) {
+    const { id } = message;
+    const messagesInbox = $state.conversations;
+
+    const messageInConversation = messagesInbox[tempId];
+
+    if (messageInConversation) {
+      Vue.delete(messagesInbox, tempId);
+      Vue.set(messagesInbox, id, { ...message });
+    }
+  },
+
   setConversationListLoading($state, status) {
     $state.uiFlags.isFetchingList = status;
   },
@@ -137,7 +186,10 @@ export const mutations = {
   updateMessage($state, { id, content_attributes }) {
     $state.conversations[id] = {
       ...$state.conversations[id],
-      content_attributes,
+      content_attributes: {
+        ...($state.conversations[id].content_attributes || {}),
+        ...content_attributes,
+      },
     };
   },
 };
