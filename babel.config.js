@@ -28,7 +28,7 @@ module.exports = api => {
     presets: [
       [
         require('@babel/preset-env').default,
-        { useBuiltIns: 'usage', corejs: 3 },
+        { targets: ['last 2 versions'], useBuiltIns: 'usage', corejs: 3 },
       ],
     ],
     plugins: plugins(),
