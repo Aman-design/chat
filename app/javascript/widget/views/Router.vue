@@ -25,14 +25,11 @@
 </template>
 
 <script>
-import Home from './Home';
-import Unread from './Unread';
-
 export default {
   name: 'Router',
   components: {
-    Home,
-    Unread,
+    Home: () => import('./Home' /* webpackChunkName: "Home" */),
+    Unread: () => import('./Unread' /* webpackChunkName: "Unread" */),
   },
   props: {
     hasFetched: {

@@ -79,8 +79,6 @@
 <script>
 import Branding from 'widget/components/Branding.vue';
 import ChatFooter from 'widget/components/ChatFooter.vue';
-import ChatHeaderExpanded from 'widget/components/ChatHeaderExpanded.vue';
-import ChatHeader from 'widget/components/ChatHeader.vue';
 import ConversationWrap from 'widget/components/ConversationWrap.vue';
 import configMixin from '../mixins/configMixin';
 import TeamAvailability from 'widget/components/TeamAvailability';
@@ -88,16 +86,24 @@ import Spinner from 'shared/components/Spinner.vue';
 import { mapGetters } from 'vuex';
 import { MAXIMUM_FILE_UPLOAD_SIZE } from 'shared/constants/messages';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
-import PreChatForm from '../components/PreChat/Form';
 export default {
   name: 'Home',
   components: {
     Branding,
     ChatFooter,
-    ChatHeader,
-    ChatHeaderExpanded,
+    ChatHeader: () =>
+      import(
+        'widget/components/ChatHeader' /* webpackChunkName: "ChatHeader" */
+      ),
+    ChatHeaderExpanded: () =>
+      import(
+        'widget/components/ChatHeaderExpanded' /* webpackChunkName: "ChatHeaderExpanded" */
+      ),
     ConversationWrap,
-    PreChatForm,
+    PreChatForm: () =>
+      import(
+        '../components/PreChat/Form' /* webpackChunkName: "PreChatForm" */
+      ),
     Spinner,
     TeamAvailability,
   },

@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import ChatMessage from 'widget/components/ChatMessage.vue';
-import AgentTypingBubble from 'widget/components/AgentTypingBubble.vue';
 import DateSeparator from 'shared/components/DateSeparator.vue';
 import Spinner from 'shared/components/Spinner.vue';
 import { mapActions, mapGetters } from 'vuex';
@@ -31,8 +29,14 @@ import { mapActions, mapGetters } from 'vuex';
 export default {
   name: 'ConversationWrap',
   components: {
-    ChatMessage,
-    AgentTypingBubble,
+    ChatMessage: () =>
+      import(
+        'widget/components/ChatMessage' /* webpackChunkName: "ChatMessage" */
+      ),
+    AgentTypingBubble: () =>
+      import(
+        'widget/components/AgentTypingBubble' /* webpackChunkName: "AgentTypingBubble" */
+      ),
     DateSeparator,
     Spinner,
   },
