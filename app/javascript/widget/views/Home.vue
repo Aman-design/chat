@@ -78,7 +78,6 @@
 
 <script>
 import Branding from 'widget/components/Branding.vue';
-import ChatFooter from 'widget/components/ChatFooter.vue';
 import ConversationWrap from 'widget/components/ConversationWrap.vue';
 import configMixin from '../mixins/configMixin';
 import TeamAvailability from 'widget/components/TeamAvailability';
@@ -90,7 +89,10 @@ export default {
   name: 'Home',
   components: {
     Branding,
-    ChatFooter,
+    ChatFooter: () =>
+      import(
+        'widget/components/ChatFooter' /* webpackChunkName: "ChatFooter" */
+      ),
     ChatHeader: () =>
       import(
         'widget/components/ChatHeader' /* webpackChunkName: "ChatHeader" */

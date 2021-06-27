@@ -34,8 +34,6 @@
 
 <script>
 import UserMessageBubble from 'widget/components/UserMessageBubble';
-import ImageBubble from 'widget/components/ImageBubble';
-import FileBubble from 'widget/components/FileBubble';
 import timeMixin from 'dashboard/mixins/time';
 import { mapGetters } from 'vuex';
 
@@ -43,8 +41,14 @@ export default {
   name: 'UserMessage',
   components: {
     UserMessageBubble,
-    ImageBubble,
-    FileBubble,
+    ImageBubble: () =>
+      import(
+        'widget/components/ImageBubble' /* webpackChunkName: "ImageBubble" */
+      ),
+    FileBubble: () =>
+      import(
+        'widget/components/FileBubble' /* webpackChunkName: "FileBubble" */
+      ),
   },
   mixins: [timeMixin],
   props: {

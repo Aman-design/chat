@@ -54,22 +54,26 @@
 
 <script>
 import messageFormatterMixin from 'shared/mixins/messageFormatterMixin';
-import ChatCard from 'shared/components/ChatCard';
-import ChatForm from 'shared/components/ChatForm';
-import ChatOptions from 'shared/components/ChatOptions';
-import ChatArticle from './template/Article';
-import EmailInput from './template/EmailInput';
-import CustomerSatisfaction from 'shared/components/CustomerSatisfaction';
 
 export default {
   name: 'AgentMessageBubble',
   components: {
-    ChatArticle,
-    ChatCard,
-    ChatForm,
-    ChatOptions,
-    EmailInput,
-    CustomerSatisfaction,
+    ChatArticle: () =>
+      import('./template/Article' /* webpackChunkName: "ChatArticle" */),
+    ChatCard: () =>
+      import('shared/components/ChatCard' /* webpackChunkName: "ChatCard" */),
+    ChatForm: () =>
+      import('shared/components/ChatForm' /* webpackChunkName: "ChatForm" */),
+    ChatOptions: () =>
+      import(
+        'shared/components/ChatOptions' /* webpackChunkName: "ChatOptions" */
+      ),
+    EmailInput: () =>
+      import('./template/EmailInput' /* webpackChunkName: "EmailInput" */),
+    CustomerSatisfaction: () =>
+      import(
+        'shared/components/CustomerSatisfaction' /* webpackChunkName: "CustomerSatisfaction" */
+      ),
   },
   mixins: [messageFormatterMixin],
   props: {
