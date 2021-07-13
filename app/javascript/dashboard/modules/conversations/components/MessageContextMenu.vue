@@ -28,6 +28,16 @@
         <woot-dropdown-item>
           <woot-button
             variant="clear"
+            size="small"
+            icon="ion-loop"
+            @click="handleTranslate"
+          >
+            {{ $t('CONVERSATION.CONTEXT_MENU.TRANSLATE') }}
+          </woot-button>
+        </woot-dropdown-item>
+        <woot-dropdown-item>
+          <woot-button
+            variant="clear"
             color-scheme="alert"
             size="small"
             icon="ion-trash-a"
@@ -75,6 +85,9 @@ export default {
     },
     handleDelete() {
       this.$emit('delete');
+    },
+    handleTranslate() {
+      this.$emit('translate');
     },
   },
 };

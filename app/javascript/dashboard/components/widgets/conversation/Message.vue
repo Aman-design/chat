@@ -70,7 +70,29 @@
         @toggle="handleContextMenuClick"
         @delete="handleDelete"
         @copy="handleCopy"
+        @translate="handleTranslate"
       />
+      <woot-modal
+        v-if="showTranslateModal"
+        show
+        :on-close="onCloseTranslateModal"
+      >
+        <div class="column content">
+          <p><b>{{ $t('TRANSLATE_MODAL.ORIGINAL_CONTENT') }}</b></p>
+          <p><i>{{ data.content }}</i></p>
+          <br />
+          <div v-if="translationsAvailable">
+            <p><b>{{ $t('TRANSLATE_MODAL.TRANSLATED_CONTENT') }}</b></p>
+            <p v-for="(translation, language) in translations" :key="language">
+              <b>{{ language }}:</b> {{ translation }}
+            </p>
+          </div>
+          <div v-else>
+            {{ $t('TRANSLATE_MODAL.NO_TRANSLATIONS_AVAILABLE') }}
+          </div>
+        </div>
+      </woot-modal>
+    </div>
     </div>
   </li>
 </template>
@@ -116,6 +138,7 @@ export default {
   data() {
     return {
       showContextMenu: false,
+      showTranslateModal: false,
     };
   },
   computed: {
@@ -148,6 +171,9 @@ export default {
       return (
         this.formatMessage(this.data.content, this.isATweet) + botMessageContent
       );
+    },
+    translations() {
+      return this.contentAttributes.translations || {};
     },
     contentAttributes() {
       return this.data.content_attributes || {};
@@ -247,6 +273,9 @@ export default {
       const { message_type: messageType } = this.data;
       return messageType ? 'right' : 'left';
     },
+    translationsAvailable() {
+      return !!Object.keys(this.translations).length;
+    }
   },
   methods: {
     handleContextMenuClick() {
@@ -269,6 +298,18 @@ export default {
       copy(this.data.content);
       this.showAlert(this.$t('CONTACT_PANEL.COPY_SUCCESSFUL'));
       this.showContextMenu = false;
+    },
+    handleTranslate() {
+      const { conversation_id: conversationId, id: messageId } = this.data;
+      this.$store.dispatch('translateMessage', {
+        conversationId,
+        messageId,
+        targetLanguage: 'ml',
+      });
+      this.showTranslateModal = true;
+    },
+    onCloseTranslateModal() {
+      this.showTranslateModal = false;
     },
   },
 };

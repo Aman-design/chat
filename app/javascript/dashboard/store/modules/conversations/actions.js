@@ -175,6 +175,7 @@ const actions = {
   },
 
   updateMessage({ commit }, message) {
+    console.log(message);
     commit(types.default.ADD_MESSAGE, message);
   },
 
@@ -272,6 +273,18 @@ const actions = {
       await ConversationApi.sendEmailTranscript({ conversationId, email });
     } catch (error) {
       throw new Error(error);
+    }
+  },
+
+  async translateMessage(_, { conversationId, messageId, targetLanguage }) {
+    try {
+      await MessageApi.translateMessage(
+        conversationId,
+        messageId,
+        targetLanguage
+      );
+    } catch (error) {
+      // ignore error
     }
   },
 };

@@ -19,11 +19,14 @@ const state = {
 export const getters = {
   getIntegrations($state) {
     return $state.records.filter(
-      item => item.id !== 'fullcontact' && item.id !== 'dialogflow'
+      item =>
+        !['fullcontact', 'dialogflow', 'google_translate'].includes(item.id)
     );
   },
   getAppIntegrations($state) {
-    return $state.records.filter(item => item.id === 'dialogflow');
+    return $state.records.filter(
+      item => item.id === 'dialogflow' || item.id === 'google_translate'
+    );
   },
   getIntegration: $state => integrationId => {
     const [integration] = $state.records.filter(
