@@ -53,12 +53,13 @@ export default {
       widgetColor: 'appConfig/getWidgetColor',
       getConversationSize: 'conversation/getConversationSize',
       currentUser: 'contacts/getCurrentUser',
+      webChannelConfig: 'appConfig/getWebChannelConfig',
     }),
     textColor() {
       return getContrastingTextColor(this.widgetColor);
     },
     hideReplyBox() {
-      const { csatSurveyEnabled } = window.chatwootWebChannel;
+      const { csatSurveyEnabled } = this.webChannelConfig;
       const { status } = this.conversationAttributes;
       return csatSurveyEnabled && status === 'resolved';
     },

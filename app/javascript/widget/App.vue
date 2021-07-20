@@ -19,6 +19,7 @@ import Router from './views/Router';
 import { getLocale } from './helpers/urlParamsHelper';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
 import { isEmptyObject } from 'widget/helpers/utils';
+import ActionCableConnector from './helpers/actionCable';
 
 export default {
   name: 'App',
@@ -38,11 +39,15 @@ export default {
   },
   computed: {
     ...mapGetters({
+      activeCampaign: 'campaign/getActiveCampaign',
+      authToken: 'appConfig/getAuthToken',
+      campaigns: 'campaign/getCampaigns',
+      contact: 'appConfig/getContact',
       hasFetched: 'agent/getHasFetched',
+      isWidgetConfigured: 'appConfig/getWidgetConfigured',
       messageCount: 'conversation/getMessageCount',
       unreadMessageCount: 'conversation/getUnreadMessageCount',
-      campaigns: 'campaign/getCampaigns',
-      activeCampaign: 'campaign/getActiveCampaign',
+      webChannelConfig: 'appConfig/getWebChannelConfig',
     }),
     isLeftAligned() {
       const isLeft = this.widgetPosition === 'left';
@@ -59,31 +64,42 @@ export default {
     activeCampaign() {
       this.setCampaignView();
     },
+    isWidgetConfigured() {
+      const { pubsubToken } = this.contact || {};
+      window.chatwootPubsubToken = pubsubToken;
+      window.actionCable = new ActionCableConnector(
+        window.WOOT_WIDGET,
+        window.chatwootPubsubToken
+      );
+      const { websiteToken, locale } = this.webChannelConfig;
+      this.setLocale(locale);
+      if (this.isIFrame) {
+        this.registerListeners();
+        this.sendLoadedEvent();
+        setHeader('X-Auth-Token', this.authToken);
+      } else {
+        setHeader('X-Auth-Token', this.authToken);
+        this.fetchOldConversations();
+        this.fetchAvailableAgents(websiteToken);
+        this.setLocale(getLocale(window.location.search));
+      }
+      if (this.isRNWebView) {
+        this.registerListeners();
+        this.sendRNWebViewLoadedEvent();
+      }
+      this.$store.dispatch('conversationAttributes/getAttributes');
+      this.registerUnreadEvents();
+      this.registerCampaignEvents();
+    },
   },
   mounted() {
-    const { websiteToken, locale } = window.chatwootWebChannel;
-    this.setLocale(locale);
-    if (this.isIFrame) {
-      this.registerListeners();
-      this.sendLoadedEvent();
-      setHeader('X-Auth-Token', window.authToken);
-    } else {
-      setHeader('X-Auth-Token', window.authToken);
-      this.fetchOldConversations();
-      this.fetchAvailableAgents(websiteToken);
-      this.setLocale(getLocale(window.location.search));
-    }
-    if (this.isRNWebView) {
-      this.registerListeners();
-      this.sendRNWebViewLoadedEvent();
-    }
-    this.$store.dispatch('conversationAttributes/getAttributes');
-    this.setWidgetColor(window.chatwootWebChannel);
-    this.registerUnreadEvents();
-    this.registerCampaignEvents();
+    const url = new URL(window.location.href);
+    this.$store.dispatch('appConfig/fetchAppConfig', {
+      token: url.searchParams.get('cw_conversation'),
+      websiteToken: url.searchParams.get('website_token'),
+    });
   },
   methods: {
-    ...mapActions('appConfig', ['setWidgetColor']),
     ...mapActions('conversation', ['fetchOldConversations', 'setUserLastSeen']),
     ...mapActions('campaign', ['initCampaigns', 'executeCampaign']),
     ...mapActions('agent', ['fetchAvailableAgents']),
@@ -98,7 +114,7 @@ export default {
       });
     },
     setLocale(locale) {
-      const { enabledLanguages } = window.chatwootWebChannel;
+      const { enabledLanguages } = this.webChannelConfig;
       if (enabledLanguages.some(lang => lang.iso_639_1_code === locale)) {
         this.$root.$i18n.locale = locale;
       }
@@ -124,7 +140,7 @@ export default {
     },
     registerCampaignEvents() {
       bus.$on('on-campaign-view-clicked', campaignId => {
-        const { websiteToken } = window.chatwootWebChannel;
+        const { websiteToken } = this.webChannelConfig;
         this.showCampaignView = false;
         this.showUnreadView = false;
         this.unsetUnreadView();
@@ -143,9 +159,7 @@ export default {
         !this.isWebWidgetTriggered;
       if (this.isIFrame && isCampaignReadyToExecute) {
         this.showCampaignView = true;
-        IFrameHelper.sendMessage({
-          event: 'setCampaignMode',
-        });
+        IFrameHelper.sendMessage({ event: 'setCampaignMode' });
       }
     },
     setUnreadView() {
@@ -176,7 +190,7 @@ export default {
       this.$store.dispatch('events/create', { name: eventName });
     },
     registerListeners() {
-      const { websiteToken } = window.chatwootWebChannel;
+      const { websiteToken } = this.webChannelConfig;
       window.addEventListener('message', e => {
         if (!IFrameHelper.isAValidEvent(e)) {
           return;
@@ -233,8 +247,8 @@ export default {
       IFrameHelper.sendMessage({
         event: 'loaded',
         config: {
-          authToken: window.authToken,
-          channelConfig: window.chatwootWebChannel,
+          authToken: this.authToken,
+          channelConfig: this.webChannelConfig,
         },
       });
     },
@@ -242,8 +256,8 @@ export default {
       RNHelper.sendMessage({
         event: 'loaded',
         config: {
-          authToken: window.authToken,
-          channelConfig: window.chatwootWebChannel,
+          authToken: this.authToken,
+          channelConfig: this.webChannelConfig,
         },
       });
     },

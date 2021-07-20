@@ -121,14 +121,18 @@ export default {
 @import '~widget/assets/scss/variables';
 
 .unread-wrap {
-  width: 100%;
-  height: 100%;
   background: transparent;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
+  height: 100%;
   justify-content: flex-end;
   overflow: hidden;
+  width: 100%;
+
+  @media only screen and (max-device-width: 667px) {
+    padding: $space-normal;
+  }
 
   .unread-messages {
     padding-bottom: $space-small;
