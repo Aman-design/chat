@@ -115,7 +115,7 @@
           "
         />
 
-        <label class="medium-9 columns">
+        <label v-if="isAWebWidgetInbox" class="medium-9 columns">
           {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.REPLY_TIME.TITLE') }}
           <select v-model="replyTime">
             <option key="in_a_few_minutes" value="in_a_few_minutes">
@@ -422,6 +422,9 @@ export default {
     inboxName() {
       if (this.isATwilioSMSChannel || this.isATwilioWhatsappChannel) {
         return `${this.inbox.name} (${this.inbox.phone_number})`;
+      }
+      if (this.isAnEmailChannel) {
+        return `${this.inbox.name} (${this.inbox.forward_to_email})`;
       }
       return this.inbox.name;
     },

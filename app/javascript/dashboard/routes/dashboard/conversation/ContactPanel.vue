@@ -4,6 +4,10 @@
       <i class="ion-chevron-right" />
     </span>
     <contact-info :contact="contact" :channel-type="channelType" />
+    <contact-custom-attributes
+      v-if="hasContactAttributes"
+      :custom-attributes="contact.custom_attributes"
+    />
     <div class="conversation--actions">
       <div class="multiselect-wrap--small">
         <contact-details-item
@@ -116,10 +120,6 @@
         emoji="🕰"
       />
     </div>
-    <contact-custom-attributes
-      v-if="hasContactAttributes"
-      :custom-attributes="contact.custom_attributes"
-    />
     <contact-conversations
       v-if="contact.id"
       :contact-id="contact.id"
