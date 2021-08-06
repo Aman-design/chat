@@ -87,10 +87,6 @@ export default {
     ...mapActions('campaign', ['initCampaigns', 'executeCampaign']),
     ...mapActions('agent', ['fetchAvailableAgents']),
     ...mapMutations('events', ['toggleOpen']),
-    scrollConversationToBottom() {
-      const container = this.$el.querySelector('.conversation-wrap');
-      container.scrollTop = container.scrollHeight;
-    },
     setBubbleLabel() {
       IFrameHelper.sendMessage({
         event: 'setBubbleLabel',
@@ -143,9 +139,7 @@ export default {
         !this.isWebWidgetTriggered;
       if (this.isIFrame && isCampaignReadyToExecute) {
         this.showCampaignView = true;
-        IFrameHelper.sendMessage({
-          event: 'setCampaignMode',
-        });
+        IFrameHelper.sendMessage({ event: 'setCampaignMode' });
         this.setIframeHeight(this.isMobile);
       }
     },
@@ -193,8 +187,6 @@ export default {
           this.fetchOldConversations().then(() => this.setUnreadView());
           this.fetchAvailableAgents(websiteToken);
           this.$store.dispatch('contacts/get');
-        } else if (message.event === 'widget-visible') {
-          this.scrollConversationToBottom();
         } else if (message.event === 'change-url') {
           const { referrerURL, referrerHost } = message;
           this.initCampaigns({ currentURL: referrerURL, websiteToken });
