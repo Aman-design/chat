@@ -14,7 +14,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import HeaderActions from './HeaderActions';
+import HeaderActions from './Header/HeaderActions';
 export default {
   name: 'ChatHeaderExpanded',
   components: {

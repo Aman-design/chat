@@ -1,35 +1,29 @@
 <template>
   <div v-if="showHeaderActions" class="actions flex items-center">
     <button
-      v-if="showPopoutButton"
+      v-if="displayConfig.showPopoutButton"
       class="button transparent compact new-window--button"
       @click="popoutWindow"
     >
-      <span class="ion-android-open"></span>
+      <span class="ion-android-open" />
     </button>
     <button
       class="button transparent compact close-button"
-      :class="{
-        'rn-close-button': isRNWebView,
-      }"
+      :class="{ 'rn-close-button': isRNWebView }"
     >
-      <span class="ion-android-close" @click="closeWindow"></span>
+      <span class="ion-android-close" @click="closeWindow" />
     </button>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 import { IFrameHelper, RNHelper } from 'widget/helpers/utils';
-import { buildPopoutURL } from '../helpers/urlParamsHelper';
+import { buildPopoutURL } from '../../helpers/urlParamsHelper';
 
 export default {
   name: 'HeaderActions',
-  props: {
-    showPopoutButton: {
-      type: Boolean,
-      default: false,
-    },
-  },
   computed: {
+    ...mapGetters({ displayConfig: 'displayConfig/getDisplayConfig' }),
     isIframe() {
       return IFrameHelper.isIFrame();
     },
@@ -64,9 +58,7 @@ export default {
     },
     closeWindow() {
       if (IFrameHelper.isIFrame()) {
-        IFrameHelper.sendMessage({
-          event: 'toggleBubble',
-        });
+        IFrameHelper.sendMessage({ event: 'toggleBubble' });
       } else if (RNHelper.isRNWebView) {
         RNHelper.sendMessage({ type: 'close-widget' });
       }

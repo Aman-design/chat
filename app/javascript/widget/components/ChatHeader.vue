@@ -29,7 +29,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import HeaderActions from './HeaderActions';
+import HeaderActions from './Header/HeaderActions';
 import availabilityMixin from 'widget/mixins/availability';
 
 export default {
