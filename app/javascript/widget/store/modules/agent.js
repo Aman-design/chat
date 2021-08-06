@@ -4,10 +4,7 @@ import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 
 const state = {
   records: [],
-  uiFlags: {
-    isError: false,
-    hasFetched: false,
-  },
+  uiFlags: {},
 };
 
 export const getters = {
@@ -22,11 +19,9 @@ export const actions = {
       const { data } = await getAvailableAgents(websiteToken);
       const { payload = [] } = data;
       commit('setAgents', payload);
-      commit('setError', false);
-      commit('setHasFetched', true);
     } catch (error) {
-      commit('setError', true);
-      commit('setHasFetched', true);
+      // Ignore error as the data fetched is used
+      // only to display available agents
     }
   },
   updatePresence: async ({ commit }, data) => {
@@ -39,12 +34,6 @@ export const mutations = {
     Vue.set($state, 'records', data);
   },
   updatePresence: MutationHelpers.updatePresence,
-  setError($state, value) {
-    Vue.set($state.uiFlags, 'isError', value);
-  },
-  setHasFetched($state, value) {
-    Vue.set($state.uiFlags, 'hasFetched', value);
-  },
 };
 
 export default {

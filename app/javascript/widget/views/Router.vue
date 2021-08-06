@@ -2,14 +2,12 @@
   <div id="app" class="woot-widget-wrap">
     <home
       v-if="showHomePage"
-      :has-fetched="hasFetched"
       :unread-message-count="unreadMessageCount"
       :show-popout-button="showPopoutButton"
     />
     <unread
       v-else
       :show-unread-view="showUnreadView"
-      :has-fetched="hasFetched"
       :unread-message-count="unreadMessageCount"
     />
   </div>
@@ -26,10 +24,6 @@ export default {
     Unread,
   },
   props: {
-    hasFetched: {
-      type: Boolean,
-      default: false,
-    },
     showUnreadView: {
       type: Boolean,
       default: false,

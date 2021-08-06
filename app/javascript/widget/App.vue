@@ -2,7 +2,6 @@
   <router
     :show-unread-view="showUnreadView"
     :show-campaign-view="showCampaignView"
-    :has-fetched="hasFetched"
     :unread-message-count="unreadMessageCount"
   />
 </template>
@@ -30,7 +29,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      hasFetched: 'agent/getHasFetched',
       messageCount: 'conversation/getMessageCount',
       unreadMessageCount: 'conversation/getUnreadMessageCount',
       campaigns: 'campaign/getCampaigns',

@@ -53,10 +53,6 @@ export default {
   },
   mixins: [configMixin],
   props: {
-    hasFetched: {
-      type: Boolean,
-      default: false,
-    },
     unreadMessageCount: {
       type: Number,
       default: 0,

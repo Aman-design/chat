@@ -98,10 +98,6 @@ export default {
   },
   mixins: [configMixin],
   props: {
-    hasFetched: {
-      type: Boolean,
-      default: false,
-    },
     showPopoutButton: {
       type: Boolean,
       default: false,
