@@ -2,11 +2,8 @@
   <router
     :show-unread-view="showUnreadView"
     :show-campaign-view="showCampaignView"
-    :is-mobile="isMobile"
     :has-fetched="hasFetched"
     :unread-message-count="unreadMessageCount"
-    :is-left-aligned="isLeftAligned"
-    :hide-message-bubble="hideMessageBubble"
   />
 </template>
 
@@ -28,9 +25,6 @@ export default {
     return {
       showUnreadView: false,
       showCampaignView: false,
-      isMobile: false,
-      hideMessageBubble: false,
-      widgetPosition: 'right',
       isWebWidgetTriggered: false,
     };
   },
@@ -42,10 +36,6 @@ export default {
       campaigns: 'campaign/getCampaigns',
       activeCampaign: 'campaign/getActiveCampaign',
     }),
-    isLeftAligned() {
-      const isLeft = this.widgetPosition === 'left';
-      return isLeft;
-    },
     isIFrame() {
       return IFrameHelper.isIFrame();
     },
@@ -123,13 +113,6 @@ export default {
         this.$root.$i18n.locale = locale;
       }
     },
-    setPosition(position) {
-      const widgetPosition = position || 'right';
-      this.widgetPosition = widgetPosition;
-    },
-    setHideMessageBubble(hideBubble) {
-      this.hideMessageBubble = !!hideBubble;
-    },
     registerUnreadEvents() {
       bus.$on('on-agent-message-recieved', () => {
         if (!this.isIFrame) {
@@ -202,14 +185,15 @@ export default {
           return;
         }
         const message = IFrameHelper.getMessage(e);
+        const { event, ...eventData } = message;
         if (message.event === 'config-set') {
+          this.setDisplayConfig(eventData);
+
           this.setLocale(message.locale);
           this.setBubbleLabel();
-          this.setPosition(message.position);
+
           this.fetchOldConversations().then(() => this.setUnreadView());
-          this.setDisplayConfig(message);
           this.fetchAvailableAgents(websiteToken);
-          this.setHideMessageBubble(message.hideMessageBubble);
           this.$store.dispatch('contacts/get');
         } else if (message.event === 'widget-visible') {
           this.scrollConversationToBottom();
@@ -219,7 +203,7 @@ export default {
           window.referrerURL = referrerURL;
           bus.$emit(BUS_EVENTS.SET_REFERRER_HOST, referrerHost);
         } else if (message.event === 'toggle-close-button') {
-          this.isMobile = message.showClose;
+          this.setDisplayConfig({ isMobile: message.isMobile });
         } else if (message.event === 'push-event') {
           this.createWidgetEvents(message);
         } else if (message.event === 'set-label') {

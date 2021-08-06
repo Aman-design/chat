@@ -1,13 +1,5 @@
 <template>
-  <div
-    id="app"
-    class="woot-widget-wrap"
-    :class="{
-      'is-mobile': isMobile,
-      'is-widget-right': !isLeftAligned,
-      'is-bubble-hidden': hideMessageBubble,
-    }"
-  >
+  <div id="app" class="woot-widget-wrap">
     <home
       v-if="showHomePage"
       :has-fetched="hasFetched"
@@ -19,7 +11,6 @@
       :show-unread-view="showUnreadView"
       :has-fetched="hasFetched"
       :unread-message-count="unreadMessageCount"
-      :hide-message-bubble="hideMessageBubble"
     />
   </div>
 </template>
@@ -39,23 +30,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    isMobile: {
-      type: Boolean,
-      default: false,
-    },
-    isLeftAligned: {
-      type: Boolean,
-      default: false,
-    },
     showUnreadView: {
       type: Boolean,
       default: false,
     },
     showCampaignView: {
-      type: Boolean,
-      default: false,
-    },
-    hideMessageBubble: {
       type: Boolean,
       default: false,
     },

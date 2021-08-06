@@ -1,5 +1,9 @@
 <template>
-  <div v-if="showHeaderActions" class="actions flex items-center">
+  <div
+    v-if="showHeaderActions"
+    class="actions flex items-center"
+    :class="{ 'is-mobile': displayConfig.isMobile }"
+  >
     <button
       v-if="displayConfig.showPopoutButton"
       class="button transparent compact new-window--button"
@@ -9,7 +13,10 @@
     </button>
     <button
       class="button transparent compact close-button"
-      :class="{ 'rn-close-button': isRNWebView }"
+      :class="{
+        'rn-close-button': isRNWebView,
+        'is-bubble-hidden': displayConfig.hideMessageBubble,
+      }"
     >
       <span class="ion-android-close" @click="closeWindow" />
     </button>
@@ -68,6 +75,20 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '~widget/assets/scss/variables.scss';
+
+.close-button.is-bubble-hidden {
+  display: block !important;
+}
+
+.actions.is-mobile {
+  .close-button {
+    display: block !important;
+  }
+
+  .new-window--button {
+    display: none !important;
+  }
+}
 
 .actions {
   button {

@@ -236,13 +236,9 @@ export const IFrameHelper = {
   },
   toggleCloseButton: () => {
     if (window.matchMedia('(max-width: 668px)').matches) {
-      IFrameHelper.sendMessage('toggle-close-button', {
-        showClose: true,
-      });
+      IFrameHelper.sendMessage('toggle-close-button', { isMobile: true });
     } else {
-      IFrameHelper.sendMessage('toggle-close-button', {
-        showClose: false,
-      });
+      IFrameHelper.sendMessage('toggle-close-button', { isMobile: false });
     }
   },
 };
