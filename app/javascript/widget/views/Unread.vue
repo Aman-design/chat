@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { IFrameHelper } from 'widget/helpers/utils';
+import { AppIFrameHelper } from 'widget/helpers/utils';
 import UnreadMessage from 'widget/components/UnreadMessage.vue';
 
 import configMixin from '../mixins/configMixin';
@@ -94,8 +94,8 @@ export default {
       bus.$emit('on-unread-view-clicked');
     },
     closeFullView() {
-      if (IFrameHelper.isIFrame()) {
-        IFrameHelper.sendMessage({
+      if (AppIFrameHelper.isIFrame()) {
+        AppIFrameHelper.sendMessage({
           event: 'toggleBubble',
         });
       }

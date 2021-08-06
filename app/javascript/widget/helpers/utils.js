@@ -10,7 +10,7 @@ export const arrayToHashById = array =>
     return newMap;
   }, {});
 
-export const IFrameHelper = {
+export const AppIFrameHelper = {
   isIFrame: () => window.self !== window.top,
   sendMessage: msg => {
     window.parent.postMessage(

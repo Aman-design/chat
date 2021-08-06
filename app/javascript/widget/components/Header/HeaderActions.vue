@@ -24,7 +24,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
-import { IFrameHelper, RNHelper } from 'widget/helpers/utils';
+import { AppIFrameHelper, RNHelper } from 'widget/helpers/utils';
 import { buildPopoutURL } from '../../helpers/urlParamsHelper';
 
 export default {
@@ -32,7 +32,7 @@ export default {
   computed: {
     ...mapGetters({ displayConfig: 'displayConfig/getDisplayConfig' }),
     isIframe() {
-      return IFrameHelper.isIFrame();
+      return AppIFrameHelper.isIFrame();
     },
     isRNWebView() {
       return RNHelper.isRNWebView();
@@ -64,8 +64,8 @@ export default {
       popoutWindow.focus();
     },
     closeWindow() {
-      if (IFrameHelper.isIFrame()) {
-        IFrameHelper.sendMessage({ event: 'toggleBubble' });
+      if (AppIFrameHelper.isIFrame()) {
+        AppIFrameHelper.sendMessage({ event: 'toggleBubble' });
       } else if (RNHelper.isRNWebView) {
         RNHelper.sendMessage({ type: 'close-widget' });
       }

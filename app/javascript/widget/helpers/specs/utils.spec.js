@@ -1,4 +1,4 @@
-import { IFrameHelper } from '../utils';
+import { AppIFrameHelper } from '../utils';
 
 jest.mock('vue', () => ({
   config: {
@@ -6,17 +6,17 @@ jest.mock('vue', () => ({
   },
 }));
 
-describe('#IFrameHelper', () => {
+describe('#AppIFrameHelper', () => {
   describe('#isAValidEvent', () => {
     it('returns if the event is valid', () => {
       expect(
-        IFrameHelper.isAValidEvent({
+        AppIFrameHelper.isAValidEvent({
           data:
             'chatwoot-widget:{"event":"config-set","locale":"fr","position":"left","hideMessageBubble":false,"showPopoutButton":true}',
         })
       ).toEqual(true);
       expect(
-        IFrameHelper.isAValidEvent({
+        AppIFrameHelper.isAValidEvent({
           data:
             '{"event":"config-set","locale":"fr","position":"left","hideMessageBubble":false,"showPopoutButton":true}',
         })
@@ -26,7 +26,7 @@ describe('#IFrameHelper', () => {
   describe('#getMessage', () => {
     it('returns parsed message', () => {
       expect(
-        IFrameHelper.getMessage({
+        AppIFrameHelper.getMessage({
           data:
             'chatwoot-widget:{"event":"config-set","locale":"fr","position":"left","hideMessageBubble":false,"showPopoutButton":true}',
         })
