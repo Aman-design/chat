@@ -21,6 +21,7 @@ import {
   setBubbleText,
 } from './bubbleHelpers';
 import { dispatchWindowEvent } from 'shared/helpers/CustomEventHelper';
+import { WIDGET_EVENTS } from '../widget/constants/widgetEvents';
 
 const EVENT_NAME = 'chatwoot:ready';
 
@@ -235,10 +236,11 @@ export const IFrameHelper = {
     }
   },
   toggleCloseButton: () => {
+    const { TOGGLE_MOBILE_VIEW } = WIDGET_EVENTS;
     if (window.matchMedia('(max-width: 668px)').matches) {
-      IFrameHelper.sendMessage('toggle-close-button', { isMobile: true });
+      IFrameHelper.sendMessage(TOGGLE_MOBILE_VIEW, { isMobile: true });
     } else {
-      IFrameHelper.sendMessage('toggle-close-button', { isMobile: false });
+      IFrameHelper.sendMessage(TOGGLE_MOBILE_VIEW, { isMobile: false });
     }
   },
 };
