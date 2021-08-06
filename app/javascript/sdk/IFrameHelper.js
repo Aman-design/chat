@@ -114,7 +114,7 @@ export const IFrameHelper = {
         sameSite: 'Lax',
       });
       window.$chatwoot.hasLoaded = true;
-      IFrameHelper.sendMessage('config-set', {
+      IFrameHelper.sendMessage(WIDGET_EVENTS.WIDGET_INITIALIZE_COMPLETE, {
         locale: window.$chatwoot.locale,
         position: window.$chatwoot.position,
         hideMessageBubble: window.$chatwoot.hideMessageBubble,

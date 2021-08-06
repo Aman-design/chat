@@ -176,7 +176,7 @@ export default {
         }
         const message = IFrameHelper.getMessage(e);
         const { event, ...eventData } = message;
-        if (message.event === 'config-set') {
+        if (message.event === WIDGET_EVENTS.WIDGET_INITIALIZE_COMPLETE) {
           this.setDisplayConfig(eventData);
           this.setLocale(message.locale);
           this.setBubbleLabel();
