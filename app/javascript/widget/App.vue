@@ -60,20 +60,16 @@ export default {
   },
   mounted() {
     const { websiteToken, locale } = window.chatwootWebChannel;
+    setHeader('X-Auth-Token', window.authToken);
+
     this.setLocale(locale);
-    if (this.isIFrame) {
+    if (this.isIFrame || this.isRNWebView) {
       this.registerListeners();
       this.sendLoadedEvent();
-      setHeader('X-Auth-Token', window.authToken);
     } else {
-      setHeader('X-Auth-Token', window.authToken);
       this.fetchOldConversations();
       this.fetchAvailableAgents(websiteToken);
       this.setLocale(getLocale(window.location.search));
-    }
-    if (this.isRNWebView) {
-      this.registerListeners();
-      this.sendRNWebViewLoadedEvent();
     }
     this.$store.dispatch('conversationAttributes/getAttributes');
     this.setWidgetColor(window.chatwootWebChannel);
@@ -226,16 +222,8 @@ export default {
       });
     },
     sendLoadedEvent() {
-      IFrameHelper.sendMessage({
-        event: 'loaded',
-        config: {
-          authToken: window.authToken,
-          channelConfig: window.chatwootWebChannel,
-        },
-      });
-    },
-    sendRNWebViewLoadedEvent() {
-      RNHelper.sendMessage({
+      const helper = this.isRNWebView ? RNHelper : IFrameHelper;
+      helper.sendMessage({
         event: 'loaded',
         config: {
           authToken: window.authToken,
