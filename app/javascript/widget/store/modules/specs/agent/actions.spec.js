@@ -10,19 +10,12 @@ describe('#actions', () => {
     it('sends correct actions if API is success', async () => {
       API.get.mockResolvedValue({ data: { payload: agents } });
       await actions.fetchAvailableAgents({ commit }, 'Hi');
-      expect(commit.mock.calls).toEqual([
-        ['setAgents', agents],
-        ['setError', false],
-        ['setHasFetched', true],
-      ]);
+      expect(commit.mock.calls).toEqual([['setAgents', agents]]);
     });
     it('sends correct actions if API is error', async () => {
       API.get.mockRejectedValue({ message: 'Authentication required' });
       await actions.fetchAvailableAgents({ commit }, 'Hi');
-      expect(commit.mock.calls).toEqual([
-        ['setError', true],
-        ['setHasFetched', true],
-      ]);
+      expect(commit.mock.calls).toEqual([]);
     });
   });
 

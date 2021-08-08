@@ -10,22 +10,6 @@ describe('#mutations', () => {
     });
   });
 
-  describe('#setError', () => {
-    it('set error flag', () => {
-      const state = { records: [], uiFlags: {} };
-      mutations.setError(state, true);
-      expect(state.uiFlags.isError).toEqual(true);
-    });
-  });
-
-  describe('#setError', () => {
-    it('set fetched flag', () => {
-      const state = { records: [], uiFlags: {} };
-      mutations.setHasFetched(state, true);
-      expect(state.uiFlags.hasFetched).toEqual(true);
-    });
-  });
-
   describe('#updatePresence', () => {
     it('updates agent presence', () => {
       const state = { records: agents };
