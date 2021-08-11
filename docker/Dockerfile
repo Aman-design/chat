@@ -35,7 +35,7 @@ RUN ls
 
 WORKDIR /app
 
-RUN PWD
+RUN pwd
 RUN ls
 
 COPY Gemfile Gemfile.lock ./
