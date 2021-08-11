@@ -6,7 +6,7 @@
         class="button small close-unread-button"
         @click="closeFullView"
       >
-        <i class="ion-android-close" />
+        <i class="ion-close-round" />
         {{ $t('UNREAD_VIEW.CLOSE_MESSAGES_BUTTON') }}
       </button>
     </div>
@@ -73,7 +73,7 @@ export default {
       campaign: 'campaign/getActiveCampaign',
     }),
     showCloseButton() {
-      return this.unreadMessageCount;
+      return this.unreadMessageCount && this.hideMessageBubble;
     },
     sender() {
       const [firstMessage] = this.unreadMessages;
@@ -153,10 +153,10 @@ export default {
 
   .close-unread-button {
     background: $color-background;
-    color: $color-light-gray;
+    color: $color-gray;
     border: 0;
-    font-weight: $font-weight-medium;
-    font-size: $font-size-mini;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-small;
     transition: all 0.3s $ease-in-cubic;
     margin-bottom: $space-slab;
     border-radius: $space-normal;
@@ -177,7 +177,7 @@ export default {
 
 .unread-messages {
   width: 100%;
-  margin-top: 0;
+  margin-top: auto;
   padding-bottom: $space-small;
   display: flex;
   flex-direction: column;
