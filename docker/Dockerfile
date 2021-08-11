@@ -43,7 +43,12 @@ RUN if [ "$RAILS_ENV" = "production" ]; then \
 COPY package.json yarn.lock ./
 RUN yarn install
 
+RUN pwd
+RUN ls
+
 COPY . /app
+
+RUN ls /app
 
 # generate production assets if production environment
 RUN if [ "$RAILS_ENV" = "production" ]; then \
@@ -74,13 +79,21 @@ RUN apk add --update --no-cache \
     imagemagick \
   && gem install bundler
 
+RUN pwd
+RUN ls
+
+
 RUN if [ "$RAILS_ENV" = "production" ]; then \
   rm -rf spec node_modules app/assets vendor/assets tmp/cache; \
   else apk add nodejs yarn; \
   fi
 
+RUN ls
+
 COPY --from=pre-builder /gems/ /gems/
 COPY --from=pre-builder /app /app
+
+RUN ls /app
 
 # Remove unnecessary files
 RUN rm -rf /gems/ruby/3.0.0/cache/*.gem \
