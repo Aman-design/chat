@@ -97,12 +97,6 @@ export default {
         label: this.$t('BUBBLE.LABEL'),
       });
     },
-    setIframeHeight(isFixedHeight) {
-      IFrameHelper.sendMessage({
-        event: 'updateIframeHeight',
-        isFixedHeight,
-      });
-    },
     setLocale(locale) {
       const { enabledLanguages } = window.chatwootWebChannel;
       if (enabledLanguages.some(lang => lang.iso_639_1_code === locale)) {
@@ -152,7 +146,6 @@ export default {
         IFrameHelper.sendMessage({
           event: 'setCampaignMode',
         });
-        this.setIframeHeight(this.isMobile);
       }
     },
     setUnreadView() {
@@ -162,13 +155,11 @@ export default {
           event: 'setUnreadMode',
           unreadMessageCount,
         });
-        this.setIframeHeight(this.isMobile);
       }
     },
     unsetUnreadView() {
       if (this.isIFrame) {
         IFrameHelper.sendMessage({ event: 'resetUnreadMode' });
-        this.setIframeHeight();
       }
     },
     createWidgetEvents(message) {
