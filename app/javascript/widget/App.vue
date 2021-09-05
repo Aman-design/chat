@@ -14,7 +14,7 @@
 <script>
 import Home from './views/Home';
 import Unread from './views/Unread';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import { setHeader } from 'widget/helpers/axios';
 import { AppIFrameHelper, RNHelper } from 'widget/helpers/utils';
 import { getLocale } from './helpers/urlParamsHelper';
@@ -93,7 +93,7 @@ export default {
     setIframeHeight(isFixedHeight) {
       this.$nextTick(() => {
         const extraHeight = this.getExtraSpaceToscroll();
-        IFrameHelper.sendMessage({
+        AppIFrameHelper.sendMessage({
           event: 'updateIframeHeight',
           isFixedHeight,
           extraHeight,
