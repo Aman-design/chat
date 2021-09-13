@@ -9,6 +9,7 @@ class Twilio::SendOnTwilioService < Base::SendOnChannelService
     begin
       twilio_message = client.messages.create(**message_params)
     rescue Twilio::REST::TwilioError => e
+      binding.pry
       Rails.logger.info "Twilio Error: #{e.message}"
     end
     message.update!(source_id: twilio_message.sid)
@@ -20,7 +21,10 @@ class Twilio::SendOnTwilioService < Base::SendOnChannelService
       from: channel.phone_number,
       to: contact_inbox.source_id
     }
-    params[:media_url] = attachments if message.attachments.present?
+    if message.attachments.present?
+      raise "Message size is too big, Maximum limit is 5MB"  if message.blob.byte_size > 1000000 || true
+      params[:media_url] = attachments
+    end
     params
   end
 
