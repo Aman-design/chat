@@ -86,6 +86,14 @@ export default {
   h6 {
     font-size: var(--font-size-normal);
   }
+
+  & > blockquote {
+    display: block !important;
+  }
+
+  & > div:first-child > blockquote {
+    display: block;
+  }
 }
 
 .show--quoted {
