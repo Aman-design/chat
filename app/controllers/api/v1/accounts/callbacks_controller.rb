@@ -18,15 +18,20 @@ class Api::V1::Accounts::CallbacksController < Api::V1::Accounts::BaseController
     end
   end
 
+  ### FIX ME: (09/30) - Remove the limit and iterate over the list of pages using cursor
+  def get_list_of_pages
+    fb_object.get_connections('me', 'accounts', { limit: 100 })
+  end
+
   def facebook_pages
-    @page_details = mark_already_existing_facebook_pages(fb_object.get_connections('me', 'accounts'))
+    @page_details = mark_already_existing_facebook_pages(get_list_of_pages)
   end
 
   # get params[:inbox_id], current_account. params[:omniauth_token]
   def reauthorize_page
     if @inbox&.facebook?
       fb_page_id = @inbox.channel.page_id
-      page_details = fb_object.get_connections('me', 'accounts')
+      page_details = get_list_of_pages
 
       if (page_detail = (page_details || []).detect { |page| fb_page_id == page['id'] })
         update_fb_page(fb_page_id, page_detail['access_token'])
