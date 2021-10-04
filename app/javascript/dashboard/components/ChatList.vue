@@ -9,6 +9,7 @@
     </div>
 
     <chat-type-tabs
+      v-if="!isIframe"
       :items="assigneeTabItems"
       :active-tab="activeAssigneeTab"
       class="tab--chat-type"
@@ -110,6 +111,9 @@ export default {
       activeInbox: 'getSelectedInbox',
       conversationStats: 'conversationStats/getStats',
     }),
+    isIframe() {
+      return window.self !== window.top;
+    },
     assigneeTabItems() {
       return this.$t('CHAT_LIST.ASSIGNEE_TYPE_TABS').map(item => {
         const count = this.conversationStats[item.COUNT_KEY] || 0;

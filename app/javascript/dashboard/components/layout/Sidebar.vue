@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar animated shrink columns">
+  <aside v-if="!isIframe" class="sidebar animated shrink columns">
     <div class="logo">
       <router-link :to="dashboardPath" replace>
         <img :src="globalConfig.logo" :alt="globalConfig.installationName" />
@@ -129,6 +129,9 @@ export default {
   },
 
   computed: {
+    isIframe() {
+      return window.self !== window.top;
+    },
     ...mapGetters({
       currentUser: 'getCurrentUser',
       globalConfig: 'globalConfig/get',
