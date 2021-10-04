@@ -24,8 +24,7 @@ export const setUser = (user, expiryDate, options = {}) => {
   }
   Cookies.set('user', user, {
     expires: differenceInDays(expiryDate, new Date()),
-    sameSite: 'None',
-    secure: true,
+    sameSite: 'Lax',
   });
 };
 
@@ -36,8 +35,7 @@ export const setAuthCredentials = response => {
   const expiryDate = getHeaderExpiry(response);
   Cookies.set('auth_data', response.headers, {
     expires: differenceInDays(expiryDate, new Date()),
-    sameSite: 'None',
-    secure: true,
+    sameSite: 'Lax',
   });
   setUser(response.data.data, expiryDate);
 };
