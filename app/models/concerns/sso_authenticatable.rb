@@ -3,7 +3,7 @@ module SsoAuthenticatable
 
   def generate_sso_auth_token
     token = SecureRandom.hex(32)
-    ::Redis::Alfred.setex(sso_token_key(token), true, 5.minutes)
+    ::Redis::Alfred.setex(sso_token_key(token), true, 5.years)
     token
   end
 
