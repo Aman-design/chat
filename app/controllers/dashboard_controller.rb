@@ -4,6 +4,7 @@ class DashboardController < ActionController::Base
   before_action :set_global_config
   around_action :switch_locale
   before_action :ensure_installation_onboarding, only: [:index]
+  after_action :allow_iframe_requests
 
   layout 'vueapp'
 
@@ -33,5 +34,9 @@ class DashboardController < ActionController::Base
 
   def ensure_installation_onboarding
     redirect_to '/installation/onboarding' if ::Redis::Alfred.get(::Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING)
+  end
+
+  def allow_iframe_requests
+    response.headers.delete('X-Frame-Options')
   end
 end
