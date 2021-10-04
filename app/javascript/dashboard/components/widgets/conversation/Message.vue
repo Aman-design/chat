@@ -68,7 +68,7 @@
       </a>
     </div>
     <div class="context-menu-wrap">
-      <context-menu
+      <!-- <context-menu
         v-if="isBubble && !isMessageDeleted"
         :is-open="showContextMenu"
         :show-copy="hasText"
@@ -76,7 +76,7 @@
         @toggle="handleContextMenuClick"
         @delete="handleDelete"
         @copy="handleCopy"
-      />
+      /> -->
     </div>
   </li>
 </template>

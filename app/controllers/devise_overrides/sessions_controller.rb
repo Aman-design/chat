@@ -27,7 +27,7 @@ class DeviseOverrides::SessionsController < ::DeviseTokenAuth::SessionsControlle
 
     sign_in(:user, @resource, store: false, bypass: false)
     # invalidate the token after the user is signed in
-    @resource.invalidate_sso_auth_token(params[:sso_auth_token])
+    # @resource.invalidate_sso_auth_token(params[:sso_auth_token])
   end
 
   def process_sso_auth_token

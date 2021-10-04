@@ -33,7 +33,7 @@
       >
         {{ this.$t('CONVERSATION.HEADER.OPEN_ACTION') }}
       </woot-button>
-      <woot-button
+      <!-- <woot-button
         v-if="showAdditionalActions"
         ref="arrowDownButton"
         :color-scheme="buttonClass"
@@ -41,7 +41,7 @@
         icon="ion-arrow-down-b"
         emoji="🔽"
         @click="openDropdown"
-      />
+      /> -->
     </div>
     <div
       v-if="showActionsDropdown"

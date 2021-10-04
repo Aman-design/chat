@@ -70,7 +70,18 @@
         </div>
       </accordion-item>
     </div>
-
+    <accordion-item
+      v-if="hasContactAttributes"
+      :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONTACT_ATTRIBUTES')"
+      :is-open="isContactSidebarItemOpen('is_contact_attributes_open')"
+      @click="
+        value => toggleSidebarUIState('is_contact_attributes_open', value)
+      "
+    >
+      <contact-custom-attributes
+        :custom-attributes="contact.custom_attributes"
+      />
+    </accordion-item>
     <accordion-item
       v-if="browser.browser_name"
       :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_INFO')"
@@ -125,18 +136,6 @@
           emoji="🕰"
         />
       </div>
-    </accordion-item>
-    <accordion-item
-      v-if="hasContactAttributes"
-      :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONTACT_ATTRIBUTES')"
-      :is-open="isContactSidebarItemOpen('is_contact_attributes_open')"
-      @click="
-        value => toggleSidebarUIState('is_contact_attributes_open', value)
-      "
-    >
-      <contact-custom-attributes
-        :custom-attributes="contact.custom_attributes"
-      />
     </accordion-item>
     <accordion-item
       v-if="contact.id"
