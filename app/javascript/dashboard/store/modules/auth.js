@@ -40,11 +40,7 @@ export const getters = {
   },
 
   getCurrentUserAvailabilityStatus(_state) {
-    const { accounts = [] } = _state.currentUser;
-    const [currentAccount = {}] = accounts.filter(
-      account => account.id === _state.currentAccountId
-    );
-    return currentAccount.availability_status;
+    return _state.currentUser.availability_status;
   },
 
   getCurrentAccountId(_state) {
@@ -129,17 +125,14 @@ export const actions = {
     }
   },
 
-  updateAvailability: async ({ commit, dispatch }, params) => {
-    try {
-      const response = await authAPI.updateAvailability(params);
+  updateAvailability: ({ commit, dispatch }, { availability }) => {
+    authAPI.updateAvailability({ availability }).then(response => {
       const userData = response.data;
-      const { id } = userData;
+      const { id, availability_status: availabilityStatus } = userData;
       setUser(userData, getHeaderExpiry(response));
       commit(types.default.SET_CURRENT_USER);
-      dispatch('agents/updatePresence', { [id]: params.availability });
-    } catch (error) {
-      // Ignore error
-    }
+      dispatch('agents/updatePresence', { [id]: availabilityStatus });
+    });
   },
 
   setCurrentAccountId({ commit }, accountId) {

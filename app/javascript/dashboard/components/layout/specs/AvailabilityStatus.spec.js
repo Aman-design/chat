@@ -17,8 +17,7 @@ const i18nConfig = new VueI18n({
 });
 
 describe('AvailabilityStatus', () => {
-  const currentAvailabilityStatus =  'online' ;
-  const currentAccountId = '1';
+  const currentUser = { availability_status: 'online' };
   let store = null;
   let actions = null;
   let modules = null;
@@ -34,8 +33,7 @@ describe('AvailabilityStatus', () => {
     modules = {
       auth: {
         getters: {
-          getCurrentUserAvailabilityStatus: () => currentAvailabilityStatus,
-          getCurrentAccountId: () => currentAccountId,
+          getCurrentUser: () => currentUser,
         },
       },
     };
@@ -79,7 +77,7 @@ describe('AvailabilityStatus', () => {
 
     expect(actions.updateAvailability).toBeCalledWith(
       expect.any(Object),
-      { availability: 'offline', account_id: currentAccountId },
+      { availability: 'offline' },
       undefined
     );
   });

@@ -161,9 +161,9 @@ export default {
     });
   },
 
-  updateAvailability(availabilityData) {
-    return axios.post(endPoints('availabilityUpdate').url, {
-      profile: { ...availabilityData },
+  updateAvailability({ availability }) {
+    return axios.put(endPoints('profileUpdate').url, {
+      profile: { availability },
     });
   },
 };

@@ -54,16 +54,13 @@ describe('#actions', () => {
 
   describe('#updateAvailability', () => {
     it('sends correct actions if API is success', async () => {
-      axios.post.mockResolvedValue({
-        data: {
-          id: 1,
-          account_users: [{ account_id: 1, availability_status: 'offline' }],
-        },
+      axios.put.mockResolvedValue({
+        data: { id: 1, name: 'John', availability_status: 'offline' },
         headers: { expiry: 581842904 },
       });
       await actions.updateAvailability(
         { commit, dispatch },
-        { availability: 'offline', account_id: 1 },
+        { availability: 'offline' }
       );
       expect(setUser).toHaveBeenCalledTimes(1);
       expect(commit.mock.calls).toEqual([[types.default.SET_CURRENT_USER]]);

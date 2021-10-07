@@ -2,29 +2,29 @@ module AvailabilityStatusable
   extend ActiveSupport::Concern
 
   def online_presence?
-    obj_id = is_a?(Contact) ? id : user_id
-    ::OnlineStatusTracker.get_presence(account_id, self.class.name, obj_id)
+    return if user_profile_page_context?
+
+    ::OnlineStatusTracker.get_presence(availability_account_id, self.class.name, id)
   end
 
   def availability_status
-    if is_a? Contact
-      contact_availability_status
-    else
-      user_availability_status
-    end
+    return availability if user_profile_page_context?
+    return 'offline' unless online_presence?
+    return 'online' if is_a? Contact
+
+    ::OnlineStatusTracker.get_status(availability_account_id, id) || 'online'
   end
 
-  private
-
-  def contact_availability_status
-    online_presence? ? 'online' : 'offline'
+  def user_profile_page_context?
+    # at the moment profile pages aren't account scoped
+    # hence we will return availability attribute instead of true presence
+    # we will revisit this later
+    is_a?(User) && Current.account.blank?
   end
 
-  def user_availability_status
-    # we are not considering presence in this case. Just returns the availability
-    return availability unless auto_offline
+  def availability_account_id
+    return account_id if is_a? Contact
 
-    # availability as a fallback in case the status is not present in redis
-    online_presence? ? (::OnlineStatusTracker.get_status(account_id, user_id) || availability) : 'offline'
+    Current.account.id
   end
 end

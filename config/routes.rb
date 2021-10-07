@@ -40,7 +40,7 @@ Rails.application.routes.draw do
             resource :contact_merge, only: [:create]
           end
 
-          resources :agents, only: [:index, :create, :update, :destroy]
+          resources :agents, except: [:show, :edit, :new]
           resources :agent_bots, only: [:index, :create, :show, :update, :destroy]
 
           resources :callbacks, only: [] do
@@ -159,11 +159,7 @@ Rails.application.routes.draw do
         resources :webhooks, only: [:create]
       end
 
-      resource :profile, only: [:show, :update] do
-        member do
-          post :availability
-        end
-      end
+      resource :profile, only: [:show, :update]
       resource :notification_subscriptions, only: [:create]
 
       namespace :widget do
