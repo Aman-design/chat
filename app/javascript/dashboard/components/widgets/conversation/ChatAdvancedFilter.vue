@@ -1,39 +1,37 @@
 <template>
-  <div class="column">
-    <woot-modal-header header-title="Filter Conversations">
-      <p>
-        {{ $t('FILTER.SUBTITLE') }}
-      </p>
-    </woot-modal-header>
-    <div class="row modal-content">
-      <div class="medium-12 columns filter-modal-content">
-        <filter-input-box
-          v-for="(filter, i) in appliedFilters"
-          :key="i"
-          v-model="appliedFilters[i]"
-          :filter-data="filter"
-          :filter-attributes="filterAttributes"
-          :input-type="getInputType(appliedFilters[i].attribute_key)"
-          :operators="getOperators(appliedFilters[i].attribute_key)"
-          :dropdown-values="getDropdownValues(appliedFilters[i].attribute_key)"
-          :show-query-operator="i !== appliedFilters.length - 1"
-          :v="$v.appliedFilters.$each[i]"
-          @clearPreviousValues="clearPreviousValues(i)"
-          @removeFilter="removeFilter(i)"
-        />
-        <div class="filter-actions">
-          <button class="append-filter-btn" @click="appendNewFilter">
-            <i class="icon ion-plus-circled margin-right-small" />
-            <span>{{ $t('FILTER.ADD_NEW_FILTER') }}</span>
-          </button>
-        </div>
-        <div class="modal-footer justify-content-end">
-          <woot-button class="button clear" @click.prevent="onClose">
-            {{ $t('FILTER.CANCEL_BUTTON_LABEL') }}
-          </woot-button>
-          <woot-button @click="submitFilterQuery">
-            {{ $t('FILTER.SUBMIT_BUTTON_LABEL') }}
-          </woot-button>
+  <modal :show.sync="show" :on-close="onClose">
+    <div class="column">
+      <woot-modal-header header-title="Filter Conversations">
+        <p>
+          Add filters below and hit "Submit" to filter conversations.
+        </p>
+      </woot-modal-header>
+      <div class="row modal-content">
+        <div class="medium-12 columns filter-modal-content">
+          <filter-input-box
+            v-for="(filter, i) in appliedFilters"
+            :key="i"
+            v-model="filter"
+            :filter-data="filter"
+            :filter-attributes="filterAttributes"
+            :input-type="getInputType(filter.attribute_key)"
+            :operators="getOperators(filter.attribute_key)"
+            :dropdown-values="getDropdownValues(filter.attribute_key)"
+          />
+          <div class="filter-actions">
+            <button class="append-filter-btn" @click="appendNewFilter">
+              <i class="icon ion-plus-circled margin-right-small" />
+              <span>Add Filter</span>
+            </button>
+          </div>
+          <div class="modal-footer justify-content-end">
+            <button class="button clear" @click.prevent="onClose">
+              Cancel
+            </button>
+            <woot-button @click="submitFilterQuery">
+              Submit
+            </woot-button>
+          </div>
         </div>
       </div>
     </div>
@@ -83,6 +81,24 @@ export default {
           filter_operator: 'equal_to',
           values: '',
           query_operator: 'and',
+        },
+      ],
+      mockOptions: [
+        {
+          id: 1,
+          name: 'Option 1',
+        },
+        {
+          id: 2,
+          name: 'Option 2',
+        },
+        {
+          id: 3,
+          name: 'Option 3',
+        },
+        {
+          id: 4,
+          name: 'Option 4',
         },
       ],
     };
