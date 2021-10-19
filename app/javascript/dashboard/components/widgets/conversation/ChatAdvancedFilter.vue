@@ -11,12 +11,17 @@
           <filter-input-box
             v-for="(filter, i) in appliedFilters"
             :key="i"
-            v-model="filter"
+            v-model="appliedFilters[i]"
             :filter-data="filter"
             :filter-attributes="filterAttributes"
-            :input-type="getInputType(filter.attribute_key)"
-            :operators="getOperators(filter.attribute_key)"
-            :dropdown-values="getDropdownValues(filter.attribute_key)"
+            :input-type="getInputType(appliedFilters[i].attribute_key)"
+            :operators="getOperators(appliedFilters[i].attribute_key)"
+            :dropdown-values="
+              getDropdownValues(appliedFilters[i].attribute_key)
+            "
+            :show-query-operator="i !== appliedFilters.length - 1"
+            @clearPreviousValues="clearPreviousValues(i)"
+            @removeFilter="removeFilter(i)"
           />
           <div class="filter-actions">
             <button class="append-filter-btn" @click="appendNewFilter">
