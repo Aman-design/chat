@@ -3,7 +3,7 @@
     <div class="column">
       <woot-modal-header header-title="Filter Conversations">
         <p>
-          Add filters below and hit "Submit" to filter conversations.
+          {{ $t('FILTER.SUBTITLE') }}
         </p>
       </woot-modal-header>
       <div class="row modal-content">
@@ -27,7 +27,7 @@
           <div class="filter-actions">
             <button class="append-filter-btn" @click="appendNewFilter">
               <i class="icon ion-plus-circled margin-right-small" />
-              <span>Add Filter</span>
+              <span>{{ $t('FILTER.ADD_NEW_FILTER') }}</span>
             </button>
           </div>
           <div class="modal-footer justify-content-end">
