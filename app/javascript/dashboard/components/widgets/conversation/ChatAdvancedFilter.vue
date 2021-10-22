@@ -20,6 +20,7 @@
               getDropdownValues(appliedFilters[i].attribute_key)
             "
             :show-query-operator="i !== appliedFilters.length - 1"
+            :v="$v.appliedFilters.$each[i]"
             @clearPreviousValues="clearPreviousValues(i)"
             @removeFilter="removeFilter(i)"
           />
