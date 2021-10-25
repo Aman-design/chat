@@ -31,9 +31,9 @@
             </button>
           </div>
           <div class="modal-footer justify-content-end">
-            <button class="button clear" @click.prevent="onClose">
+            <woot-button class="button clear" @click.prevent="onClose">
               {{ $t('FILTER.CANCEL_BUTTON_LABEL') }}
-            </button>
+            </woot-button>
             <woot-button @click="submitFilterQuery">
               {{ $t('FILTER.SUBMIT_BUTTON_LABEL') }}
             </woot-button>
