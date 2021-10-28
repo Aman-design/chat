@@ -55,10 +55,8 @@ const actions = {
   fetchFilteredConversations: async ({ commit, dispatch }, payload) => {
     commit(types.default.SET_LIST_LOADING_STATUS);
     try {
-      const response = await ConversationApi.filter(payload);
-      const {
-        data: { payload: chatList, meta: metaData },
-      } = response.data;
+      const { data } = await ConversationApi.filter(payload);
+      const { payload: chatList, meta: metaData } = data;
       commit(types.default.SET_ALL_CONVERSATION, chatList);
       dispatch('conversationStats/set', metaData);
       dispatch('conversationLabels/setBulkConversationLabels', chatList);
@@ -80,6 +78,7 @@ const actions = {
         );
       }
     } catch (error) {
+      console.log(error);
       // Handle error
     }
   },
