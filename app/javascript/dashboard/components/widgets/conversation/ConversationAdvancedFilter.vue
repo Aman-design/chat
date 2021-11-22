@@ -41,7 +41,7 @@
 <script>
 import alertMixin from 'shared/mixins/alertMixin';
 import { required, requiredIf } from 'vuelidate/lib/validators';
-import FilterInputBox from './components/FilterInput.vue';
+import FilterInputBox from '../../FilterInput.vue';
 import languages from './advancedFilterItems/languages';
 import countries from '../../../../shared/constants/countries';
 
