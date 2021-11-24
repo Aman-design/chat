@@ -57,6 +57,7 @@ import TableFooter from 'dashboard/components/widgets/TableFooter';
 import ImportContacts from './ImportContacts.vue';
 import FilterContacts from './FilterContacts.vue';
 import contactFilterItems from '../contactFilterItems';
+import filterQueryGenerator from '../../../../helper/filterQueryGenerator';
 
 const DEFAULT_PAGE = 1;
 
@@ -211,7 +212,9 @@ export default {
       this.fetchContacts(this.meta.currentPage);
     },
     onApplyFilter(payload) {
-      console.log(payload);
+      this.$store.dispatch('contacts/filter', {
+        queryPayload: filterQueryGenerator(payload),
+      });
     },
   },
 };

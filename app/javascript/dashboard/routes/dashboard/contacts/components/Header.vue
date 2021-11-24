@@ -25,15 +25,20 @@
             {{ $t('CONTACTS_PAGE.SEARCH_BUTTON') }}
           </woot-button>
         </div>
-        <woot-button
-          color-scheme="secondary"
-          icon="ion-ios-settings-strong"
-          class="margin-right-small"
-          data-testid="create-new-contact"
-          @click="onToggleFilter"
-        >
-          {{ $t('CONTACTS_PAGE.FILTER_CONTACTS') }}
-        </woot-button>
+        <div class="filters__btn-group">
+          <!-- <button class="filters__btn-clear">
+            <i class="icon ion-close-circled" />
+          </button> -->
+          <woot-button
+            color-scheme="secondary"
+            icon="ion-ios-settings-strong"
+            class="margin-right-small"
+            data-testid="create-new-contact"
+            @click="onToggleFilter"
+          >
+            {{ $t('CONTACTS_PAGE.FILTER_CONTACTS') }}
+          </woot-button>
+        </div>
         <woot-button
           color-scheme="success"
           icon="ion-android-add-circle"
