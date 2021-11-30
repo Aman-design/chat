@@ -1,5 +1,5 @@
-import ConversationAPI from 'widget/api/conversationPublic';
-import MessageAPI from 'widget/api/messagePublic';
+import ConversationAPI from 'widget/api/conversationNew';
+import MessageAPI from 'widget/api/messageNew';
 import { getNonDeletedMessages } from './helpers';
 
 export const actions = {
@@ -166,12 +166,11 @@ export const actions = {
   },
 
   setUserLastSeenIn: async ({ commit, getters }, params) => {
-    const { conversationId } = params;
+    const { conversationId, userLastSeenAt = Date.now() / 1000 } = params;
     if (!getters.allMessagesCountIn(conversationId)) {
       return;
     }
 
-    const userLastSeenAt = Date.now() / 1000;
     try {
       commit('setConversationMeta', {
         meta: { userLastSeenAt },
