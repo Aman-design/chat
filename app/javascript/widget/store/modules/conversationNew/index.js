@@ -20,7 +20,7 @@ const state = {
   uiFlags: {
     allFetched: false,
     isFetching: false,
-    isCreating: true,
+    isCreating: false,
   },
 };
 

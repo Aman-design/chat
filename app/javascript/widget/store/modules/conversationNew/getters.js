@@ -28,7 +28,7 @@ export const getters = {
     if (uiFlags) return uiFlags.allFetched;
     return false;
   },
-  isCreating: _state => _state.conversations.uiFlags.isCreating,
+  isCreating: _state => _state.uiFlags.isCreating,
   isAgentTypingIn: (...getterArguments) => conversationId => {
     const [, _getters] = getterArguments;
     const uiFlags = _getters.uiFlagsIn(conversationId);
