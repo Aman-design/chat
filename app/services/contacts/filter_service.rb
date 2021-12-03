@@ -33,6 +33,9 @@ class Contacts::FilterService < FilterService
       else
         " LOWER(contacts.#{attribute_key}) #{filter_operator_value} #{query_operator} "
       end
+    when 'availability_status'
+      contact_ids = online_account_contacts
+      availability_status_contact_filter(contact_ids, query_hash, current_index)
     end
   end
 
@@ -57,5 +60,21 @@ class Contacts::FilterService < FilterService
     return "= :value_#{current_index}" if filter_operator == 'equal_to'
 
     "!= :value_#{current_index}"
+  end
+
+  def online_account_contacts
+    contact_ids = ::OnlineStatusTracker.get_available_contacts(@current_account.id)
+  end
+
+  def availability_status_contact_filter(contact_ids, query_hash, current_index)
+    query_operator = query_hash[:query_operator]
+
+    case query_hash[:filter_operator]
+    when 'equal_to'
+      @filter_values["value_#{current_index}"] = contact_ids
+      " contacts.id IN (:value_#{current_index}) #{query_operator}"
+    when 'not_equal_to'
+      " contacts.id NOT IN (:value_#{current_index}) #{query_operator}"
+    end
   end
 end
