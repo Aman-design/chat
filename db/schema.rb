@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_22_112607) do
+ActiveRecord::Schema.define(version: 2021_12_07_113102) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -270,6 +270,8 @@ ActiveRecord::Schema.define(version: 2021_11_22_112607) do
     t.jsonb "provider_config", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "message_templates", default: {}
+    t.datetime "message_templates_last_updated"
     t.index ["phone_number"], name: "index_channel_whatsapp_on_phone_number", unique: true
   end
 
@@ -366,7 +368,7 @@ ActiveRecord::Schema.define(version: 2021_11_22_112607) do
     t.text "attribute_description"
     t.jsonb "attribute_values", default: []
     t.index ["account_id"], name: "index_custom_attribute_definitions_on_account_id"
-    t.index ["attribute_key", "attribute_model"], name: "attribute_key_model_index", unique: true
+    t.index ["attribute_key", "account_id"], name: "attribute_key_index", unique: true
   end
 
   create_table "custom_filters", force: :cascade do |t|
