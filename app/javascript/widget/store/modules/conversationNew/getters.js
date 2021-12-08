@@ -36,8 +36,7 @@ export const getters = {
     if (uiFlags) return uiFlags.isAgentTyping;
     return false;
   },
-  isFetchingConversationsList: _state =>
-    _state.conversations.uiFlags.isFetching,
+  isFetchingConversationsList: _state => _state.uiFlags.isFetching,
   allConversations: (...getterArguments) => {
     const [_state, , , _rootGetters] = getterArguments;
     const conversations = _state.conversations.allIds.map(id => {
