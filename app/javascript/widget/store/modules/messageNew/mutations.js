@@ -10,7 +10,7 @@ export const mutations = {
   addMessageIds($state, { messages }) {
     const messageIds = messages.map(message => message.id);
     const allIds = $state.messages.allIds;
-    const newIds = [allIds, messageIds];
+    const newIds = [...allIds, ...messageIds];
     const uniqIds = Array.from(new Set(newIds));
 
     Vue.set($state.messages, 'allIds', uniqIds);
@@ -42,8 +42,15 @@ export const mutations = {
   },
 
   setMessageUIFlag($state, { messageId, uiFlags }) {
+    const defaultFlags = {
+      isCreating: false,
+      isPending: true,
+      isDeleting: false,
+      isUpdating: false,
+    };
     const flags = $state.messages.uiFlags.byId[messageId];
     $state.messages.uiFlags.byId[messageId] = {
+      ...defaultFlags,
       ...flags,
       ...uiFlags,
     };
