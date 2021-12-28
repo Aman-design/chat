@@ -13,7 +13,7 @@ class Webhooks::InstagramController < ApplicationController
 
   def events
     Rails.logger.info('Instagram webhook received events')
-    if params['object'].casecmp('instagram').zero?
+    if params['object'] && params['object'].casecmp('instagram').zero?
       ::Webhooks::InstagramEventsJob.perform_later(params.to_unsafe_hash[:entry])
       render json: :ok
     else
