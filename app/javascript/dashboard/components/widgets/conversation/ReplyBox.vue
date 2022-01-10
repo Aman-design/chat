@@ -103,6 +103,7 @@ import {
 import { MESSAGE_MAX_LENGTH } from 'shared/helpers/MessageTypeHelper';
 import inboxMixin from 'shared/mixins/inboxMixin';
 import uiSettingsMixin from 'dashboard/mixins/uiSettings';
+import { DirectUpload } from 'activestorage';
 
 export default {
   components: {
@@ -373,6 +374,7 @@ export default {
             'createPendingMessageAndSend',
             messagePayload
           );
+          debugger
           this.$emit(BUS_EVENTS.SCROLL_TO_MESSAGE);
         } catch (error) {
           const errorMessage =
@@ -444,7 +446,22 @@ export default {
         return;
       }
       if (checkFileSizeLimit(file, MAXIMUM_FILE_UPLOAD_SIZE)) {
-        const upload = new DirectUpload(file.file, file.data['direct_upload_url'], token, attachmentName)
+        const upload = new DirectUpload(file.file, '/rails/active_storage/direct_uploads', null, file.file.name);
+        upload.create((error, blob) => {
+          if (error) {
+            this.showAlert(
+              "Not able to upload the file."
+            );
+          } else {
+            this.attachedFiles.push({
+              currentChatId: this.currentChat.id,
+              resource: blob,
+              isPrivate: this.isPrivate,
+              thumb: null,
+              blobSignedId: blob.signed_id,
+            });
+          }
+        });
       } else {
         this.showAlert(
           this.$t('CONVERSATION.FILE_SIZE_LIMIT', {
@@ -495,7 +512,8 @@ export default {
       }
 
       if (attachment) {
-        messagePayload.file = attachment.resource.file;
+        messagePayload.file = attachment.resource;
+        messagePayload.blobId = attachment.blobSignedId;
       }
 
       if (this.ccEmails) {
