@@ -1,5 +1,5 @@
 <template>
-  <aside class="woot-sidebar">
+  <aside v-if="!isIframe" class="woot-sidebar">
     <primary-sidebar
       :logo-source="globalConfig.logoThumbnail"
       :installation-name="globalConfig.installationName"

@@ -84,8 +84,8 @@
         />
       </div>
     </div>
-    <!-- <div v-if="shouldShowContextMenu" class="context-menu-wrap">
-      <context-menu
+    <div v-if="shouldShowContextMenu" class="context-menu-wrap">
+      <!-- <context-menu
         v-if="isBubble && !isMessageDeleted"
         :is-open="showContextMenu"
         :show-copy="hasText"
@@ -93,8 +93,8 @@
         @toggle="handleContextMenuClick"
         @delete="handleDelete"
         @copy="handleCopy"
-      />
-    </div> -->
+      /> -->
+    </div>
   </li>
 </template>
 <script>
