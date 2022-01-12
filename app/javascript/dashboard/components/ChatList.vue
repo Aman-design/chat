@@ -6,7 +6,7 @@ l<template>
         {{ pageTitle }}
       </h1>
 
-      <div class="filter--actions">
+      <div class="filter--actions" :class="{ 'margin-right-small': isIframe }">
         <chat-filter
           v-if="!hasAppliedFilters"
           @statusFilterChange="updateStatusType"
@@ -21,6 +21,7 @@ l<template>
           {{ $t('FILTER.CLEAR_BUTTON_LABEL') }}
         </woot-button>
         <woot-button
+          v-if="!isIframe"
           v-tooltip.top-end="$t('FILTER.TOOLTIP_LABEL')"
           variant="clear"
           color-scheme="secondary"
