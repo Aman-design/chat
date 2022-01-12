@@ -40,7 +40,7 @@ Rails.application.routes.draw do
             resource :contact_merge, only: [:create]
           end
 
-          resources :agents, except: [:show, :edit, :new]
+          resources :agents, only: [:index, :create, :update, :destroy]
           resources :agent_bots, only: [:index, :create, :show, :update, :destroy]
 
           resources :callbacks, only: [] do
@@ -52,14 +52,18 @@ Rails.application.routes.draw do
             end
           end
           resources :canned_responses, except: [:show, :edit, :new]
+          resources :automation_rules, only: [:create, :index]
           resources :campaigns, only: [:index, :create, :show, :update, :destroy]
 
           namespace :channels do
             resource :twilio_channel, only: [:create]
           end
           resources :conversations, only: [:index, :create, :show] do
-            get 'meta', on: :collection
-            get 'search', on: :collection
+            collection do
+              get :meta
+              get :search
+              post :filter
+            end
             scope module: :conversations do
               resources :messages, only: [:index, :create, :destroy]
               resources :assignments, only: [:create]
@@ -80,15 +84,18 @@ Rails.application.routes.draw do
             collection do
               get :active
               get :search
+              post :filter
               post :import
             end
             member do
               get :contactable_inboxes
+              post :destroy_custom_attributes
             end
             scope module: :contacts do
               resources :conversations, only: [:index]
               resources :contact_inboxes, only: [:create]
               resources :labels, only: [:create, :index]
+              resources :notes
             end
           end
           resources :csat_survey_responses, only: [:index] do
@@ -159,8 +166,14 @@ Rails.application.routes.draw do
         resources :webhooks, only: [:create]
       end
 
-      resource :profile, only: [:show, :update]
-      resource :notification_subscriptions, only: [:create]
+      resource :profile, only: [:show, :update] do
+        delete :avatar, on: :collection
+        member do
+          post :availability
+        end
+      end
+
+      resource :notification_subscriptions, only: [:create, :destroy]
 
       namespace :widget do
         resource :config, only: [:create]
@@ -174,7 +187,11 @@ Rails.application.routes.draw do
             post :transcript
           end
         end
-        resource :contact, only: [:show, :update]
+        resource :contact, only: [:show, :update] do
+          collection do
+            post :destroy_custom_attributes
+          end
+        end
         resources :inbox_members, only: [:index]
         resources :labels, only: [:create, :destroy]
       end
@@ -251,6 +268,9 @@ Rails.application.routes.draw do
   post 'webhooks/twitter', to: 'api/v1/webhooks#twitter_events'
   post 'webhooks/line/:line_channel_id', to: 'webhooks/line#process_payload'
   post 'webhooks/telegram/:bot_token', to: 'webhooks/telegram#process_payload'
+  post 'webhooks/whatsapp/:phone_number', to: 'webhooks/whatsapp#process_payload'
+  get 'webhooks/instagram', to: 'webhooks/instagram#verify'
+  post 'webhooks/instagram', to: 'webhooks/instagram#events'
 
   namespace :twitter do
     resource :callback, only: [:show]
@@ -275,6 +295,8 @@ Rails.application.routes.draw do
     get 'super_admin/logout', to: 'super_admin/devise/sessions#destroy'
     namespace :super_admin do
       root to: 'dashboard#index'
+
+      resource :app_config, only: [:show, :create]
 
       # order of resources affect the order of sidebar navigation in super admin
       resources :accounts

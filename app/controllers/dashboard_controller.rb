@@ -27,9 +27,7 @@ class DashboardController < ActionController::Base
       'API_CHANNEL_THUMBNAIL',
       'ANALYTICS_TOKEN',
       'ANALYTICS_HOST'
-    ).merge(
-      APP_VERSION: Chatwoot.config[:version]
-    )
+    ).merge(app_config)
   end
 
   def ensure_installation_onboarding
@@ -38,5 +36,12 @@ class DashboardController < ActionController::Base
 
   def allow_iframe_requests
     response.headers.delete('X-Frame-Options')
+  end
+
+  def app_config
+    { APP_VERSION: Chatwoot.config[:version],
+      VAPID_PUBLIC_KEY: VapidService.public_key,
+      ENABLE_ACCOUNT_SIGNUP: GlobalConfigService.load('ENABLE_ACCOUNT_SIGNUP', 'false'),
+      FB_APP_ID: GlobalConfigService.load('FB_APP_ID', '') }
   end
 end

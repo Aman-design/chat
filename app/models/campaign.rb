@@ -2,22 +2,23 @@
 #
 # Table name: campaigns
 #
-#  id              :bigint           not null, primary key
-#  audience        :jsonb
-#  campaign_status :integer          default("active"), not null
-#  campaign_type   :integer          default("ongoing"), not null
-#  description     :text
-#  enabled         :boolean          default(TRUE)
-#  message         :text             not null
-#  scheduled_at    :datetime
-#  title           :string           not null
-#  trigger_rules   :jsonb
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  account_id      :bigint           not null
-#  display_id      :integer          not null
-#  inbox_id        :bigint           not null
-#  sender_id       :integer
+#  id                                 :bigint           not null, primary key
+#  audience                           :jsonb
+#  campaign_status                    :integer          default("active"), not null
+#  campaign_type                      :integer          default("ongoing"), not null
+#  description                        :text
+#  enabled                            :boolean          default(TRUE)
+#  message                            :text             not null
+#  scheduled_at                       :datetime
+#  title                              :string           not null
+#  trigger_only_during_business_hours :boolean          default(FALSE)
+#  trigger_rules                      :jsonb
+#  created_at                         :datetime         not null
+#  updated_at                         :datetime         not null
+#  account_id                         :bigint           not null
+#  display_id                         :integer          not null
+#  inbox_id                           :bigint           not null
+#  sender_id                          :integer
 #
 # Indexes
 #
@@ -29,8 +30,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (account_id => accounts.id)
-#  fk_rails_...  (inbox_id => inboxes.id)
+#  fk_rails_...  (account_id => accounts.id) ON DELETE => cascade
+#  fk_rails_...  (inbox_id => inboxes.id) ON DELETE => cascade
 #
 class Campaign < ApplicationRecord
   validates :account_id, presence: true

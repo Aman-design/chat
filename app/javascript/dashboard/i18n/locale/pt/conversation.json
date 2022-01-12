@@ -1,6 +1,7 @@
 {
   "CONVERSATION": {
     "404": "Por favor, selecione uma conversa no painel da esquerda",
+    "UNVERIFIED_SESSION": "The identity of this user is not verified",
     "NO_MESSAGE_1": "Oh oh! Parece que não há mensagens de clientes na sua caixa de entrada.",
     "NO_MESSAGE_2": " para enviar uma mensagem para sua página!",
     "NO_INBOX_1": "Hola! Parece que você não adicionou nenhuma caixa de entrada ainda.",
@@ -39,7 +40,10 @@
       "OPEN_ACTION": "Abertas",
       "OPEN": "MAIS",
       "CLOSE": "FECHAR",
-      "DETAILS": "Detalhes"
+      "DETAILS": "Detalhes",
+      "SNOOZED_UNTIL_TOMORROW": "Snoozed until tomorrow",
+      "SNOOZED_UNTIL_NEXT_WEEK": "Snoozed until next week",
+      "SNOOZED_UNTIL_NEXT_REPLY": "Snoozed until next reply"
     },
     "RESOLVE_DROPDOWN": {
       "MARK_PENDING": "Marcar como pendente",
@@ -84,6 +88,7 @@
     "CHANGE_AGENT": "Responsável da conversa alterado",
     "CHANGE_TEAM": "Equipa de conversação alterada",
     "FILE_SIZE_LIMIT": "O ficheiro ultrapassa o tamanho limite {MAXIMUM_FILE_UPLOAD_SIZE}",
+    "MESSAGE_ERROR": "Unable to send this message, please try again later",
     "SENT_BY": "Enviado por:",
     "ASSIGNMENT": {
       "SELECT_AGENT": "Escolher Agente",
@@ -150,6 +155,27 @@
       "CONVERSATION_INFO": "Conversation Information",
       "CONTACT_ATTRIBUTES": "Contact Attributes",
       "PREVIOUS_CONVERSATION": "Conversas anteriores"
+    }
+  },
+  "CONVERSATION_CUSTOM_ATTRIBUTES": {
+    "ADD_BUTTON_TEXT": "Create attribute",
+    "UPDATE": {
+      "SUCCESS": "Attribute updated successfully",
+      "ERROR": "Unable to update attribute. Please try again later"
+    },
+    "ADD": {
+      "TITLE": "Adicionar",
+      "SUCCESS": "Attribute added successfully",
+      "ERROR": "Unable to add attribute. Please try again later"
+    },
+    "DELETE": {
+      "SUCCESS": "Attribute deleted successfully",
+      "ERROR": "Unable to delete attribute. Please try again later"
+    },
+    "ATTRIBUTE_SELECT": {
+      "TITLE": "Add attributes",
+      "PLACEHOLDER": "Search attributes",
+      "NO_RESULT": "No attributes found"
     }
   },
   "EMAIL_HEADER": {
