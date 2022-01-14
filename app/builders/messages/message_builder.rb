@@ -10,12 +10,14 @@ class Messages::MessageBuilder
     @message_type = params[:message_type] || 'outgoing'
     @items = params.to_unsafe_h&.dig(:content_attributes, :items)
     @attachments = params[:attachments]
+    @files = params[:files]
     @in_reply_to = params.to_unsafe_h&.dig(:content_attributes, :in_reply_to)
   end
 
   def perform
     @message = @conversation.messages.build(message_params)
     process_attachments
+    process_files
     process_emails
     @message.save!
     @message
@@ -23,8 +25,20 @@ class Messages::MessageBuilder
 
   private
 
+  def process_files
+        binding.pry
+
+    return if @files.blank?
+
+    @files.each do |uploaded_attachment|
+      @message.attachments.build(
+        account_id: @message.account_id,
+        file: uploaded_attachment
+      )
+    end
+  end
+
   def process_attachments
-    binding.pry
     return if @attachments.blank?
 
     @attachments.each do |uploaded_attachment|

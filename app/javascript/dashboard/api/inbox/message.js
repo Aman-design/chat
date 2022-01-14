@@ -14,10 +14,11 @@ export const buildCreatePayload = ({
   let payload;
   if (file) {
     payload = new FormData();
-    payload.append('attachments[]', { signedId: file.signed_id, contentType: file.content_type });
+    // payload.append('attachments[]', file, file.content_type);
     if (message) {
       payload.append('content', message);
     }
+    payload.append('files[]', file.signed_id);
     payload.append('private', isPrivate);
     payload.append('echo_id', echoId);
     payload.append('cc_emails', ccEmails);
