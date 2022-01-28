@@ -31,6 +31,7 @@ class Messages::MessageBuilder
     @attachments.each do |uploaded_attachment|
       @message.attachments.build(
         account_id: @message.account_id,
+        file_type: file_type(uploaded_attachment&.content_type),
         file: uploaded_attachment
       )
     end

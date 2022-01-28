@@ -7,7 +7,7 @@
     >
       <div class="thumb-wrap">
         <img
-          v-if="isTypeImage(attachment.resource.content_type)"
+          v-if="isTypeImage(attachment.resource.type)"
           class="image-thumb"
           :src="attachment.thumb"
         />
@@ -15,12 +15,12 @@
       </div>
       <div class="file-name-wrap">
         <span class="item">
-          {{ attachment.resource.filename }}
+          {{ attachment.resource.name }}
         </span>
       </div>
       <div class="file-size-wrap">
         <span class="item">
-          {{ formatFileSize(attachment.resource.byte_size) }}
+          {{ formatFileSize(attachment.resource.size) }}
         </span>
       </div>
       <div class="remove-file-wrap">
