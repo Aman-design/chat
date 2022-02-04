@@ -458,9 +458,7 @@ export default {
       if (checkFileSizeLimit(file, MAXIMUM_FILE_UPLOAD_SIZE)) {
         const upload = new DirectUpload(
           file.file,
-          '/rails/active_storage/direct_uploads',
-          null,
-          file.file.name
+          '/rails/active_storage/direct_uploads'
         );
         upload.create((error, blob) => {
           if (error) {
