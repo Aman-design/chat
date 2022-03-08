@@ -59,3 +59,9 @@
 - name: DISABLE_USER_PROFILE_UPDATE
   value: false
   locked: false
+- name: CSML_BOT_HOST
+  value:
+  locked: false
+- name: CSML_BOT_API_KEY
+  value:
+  locked: false

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_18_120357) do
+ActiveRecord::Schema.define(version: 2022_03_08_105527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -382,6 +382,17 @@ ActiveRecord::Schema.define(version: 2022_02_18_120357) do
     t.index ["contact_id"], name: "index_csat_survey_responses_on_contact_id"
     t.index ["conversation_id"], name: "index_csat_survey_responses_on_conversation_id"
     t.index ["message_id"], name: "index_csat_survey_responses_on_message_id", unique: true
+  end
+
+  create_table "csml_bots", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.string "bot_config", null: false
+    t.bigint "account_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_csml_bots_on_account_id"
+    t.index ["name"], name: "index_csml_bots_on_name"
   end
 
   create_table "custom_attribute_definitions", force: :cascade do |t|

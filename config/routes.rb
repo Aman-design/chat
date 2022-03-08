@@ -53,6 +53,8 @@ Rails.application.routes.draw do
             end
           end
           resources :canned_responses, except: [:show, :edit, :new]
+          resources :csml_bots, only: [:index, :create, :show, :update, :destroy]
+
           resources :automation_rules, except: [:edit] do
             post :clone
           end
