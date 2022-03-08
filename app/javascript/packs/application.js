@@ -43,6 +43,7 @@ import {
   initializeChatwootEvents,
 } from '../dashboard/helper/scriptHelpers';
 import FluentIcon from 'shared/components/FluentIcon/DashboardIcon';
+import CsmlMonacoEditor from '@clevy/vue-csml-monaco';
 
 Vue.config.env = process.env;
 
@@ -73,6 +74,7 @@ Vue.use(VTooltip, {
   defaultHtml: false,
 });
 Vue.use(hljs.vuePlugin);
+Vue.use(CsmlMonacoEditor);
 
 Vue.component('multiselect', Multiselect);
 Vue.component('woot-switch', WootSwitch);

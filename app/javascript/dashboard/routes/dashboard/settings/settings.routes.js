@@ -12,6 +12,7 @@ import campaigns from './campaigns/campaigns.routes';
 import teams from './teams/teams.routes';
 import attributes from './attributes/attributes.routes';
 import automation from './automation/automation.routes';
+import bot from './bot/bot.routes';
 import store from '../../../store';
 
 export default {
@@ -40,5 +41,6 @@ export default {
     ...integrationapps.routes,
     ...attributes.routes,
     ...automation.routes,
+    ...bot.routes,
   ],
 };

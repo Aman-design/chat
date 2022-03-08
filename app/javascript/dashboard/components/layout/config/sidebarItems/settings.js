@@ -30,6 +30,7 @@ const settings = accountId => ({
     'settings_teams_edit_members',
     'settings_teams_edit_finish',
     'automation_list',
+    'bot',
   ],
   menuItems: [
     {
@@ -75,6 +76,13 @@ const settings = accountId => ({
       hasSubMenu: false,
       toState: frontendURL(`accounts/${accountId}/settings/automation/list`),
       toStateName: 'automation_list',
+    },
+    {
+      icon: 'bot',
+      label: 'BOT',
+      hasSubMenu: false,
+      toState: frontendURL(`accounts/${accountId}/settings/bot`),
+      toStateName: 'bot',
     },
     {
       icon: 'chat-multiple',
