@@ -3,7 +3,7 @@
     <!-- List Canned Response -->
     <div class="row">
       <div class="small-8 columns with-right-space">
-        <p v-if="!inboxesList.length" class="no-items-error-message">
+        <!-- <p v-if="!inboxesList.length" class="no-items-error-message">
           {{ $t('INBOX_MGMT.LIST.404') }}
           <router-link
             v-if="isAdmin"
@@ -11,7 +11,7 @@
           >
             {{ $t('SETTINGS.INBOXES.NEW_INBOX') }}
           </router-link>
-        </p>
+        </p> -->
 
         <table v-if="inboxesList.length" class="woot-table">
           <tbody>

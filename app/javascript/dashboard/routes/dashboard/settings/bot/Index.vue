@@ -10,25 +10,11 @@
           </thead>
           <tbody>
             <tr v-for="(bot, index) in records" :key="index">
-              <td>
+              <td class="nowrap">
                 <router-link :to="`bot/${index}`">{{ bot.name }}</router-link>
               </td>
               <td>{{ bot.description }}</td>
-              <td>
-                <button
-                  type="button"
-                  class="toggle-button"
-                  :class="{ active: bot.active }"
-                  role="switch"
-                  :aria-checked="bot.active.toString()"
-                >
-                  <span
-                    aria-hidden="true"
-                    :class="{ active: bot.active }"
-                  ></span>
-                </button>
-              </td>
-              <td>{{ bot.created_on }}</td>
+              <td class="nowrap">{{ bot.created_on }}</td>
             </tr>
           </tbody>
         </table>
@@ -49,7 +35,9 @@
       class-names="button--fixed-right-top"
       icon="add-circle"
     >
-      Configure new bot
+      <router-link to="bot/new">
+        Configure new bot
+      </router-link>
     </woot-button>
   </div>
 </template>
@@ -61,26 +49,23 @@ export default {
       records: [
         {
           name: 'Ultron',
-          description: 'This is some random test bot',
-          active: true,
+          description:
+            'This is some random test bot. This is some random test bot. This is some random test bot. This is some random test bot',
           created_on: 'Tue 8 Mar, 2022',
         },
         {
           name: 'Super bot',
           description: 'This is some random test bot',
-          active: true,
           created_on: 'Mon 12 Feb, 2022',
         },
         {
           name: 'Wall e',
           description: 'This is some random test bot',
-          active: true,
           created_on: 'Sub 18 Dec, 2022',
         },
         {
           name: 'Test Bot 32',
           description: 'This is some random test bot',
-          active: true,
           created_on: 'Wed 10 Mar, 2022',
         },
       ],
@@ -128,5 +113,9 @@ export default {
 }
 .toggle-button span.active {
   transform: translate(var(--space-one-point-five), var(--space-zero));
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 </style>

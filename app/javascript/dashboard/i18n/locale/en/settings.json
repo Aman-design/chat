@@ -23,7 +23,7 @@
         "TITLE": "Personal message signature",
         "NOTE": "Create a personal message signature that would be added to all the messages you send from the platform. Use the rich content editor to create a highly personalised signature.",
         "BTN_TEXT": "Save message signature",
-        "API_ERROR":"Couldn't save signature! Try again",
+        "API_ERROR": "Couldn't save signature! Try again",
         "API_SUCCESS": "Signature saved successfully"
       },
       "MESSAGE_SIGNATURE": {
@@ -84,7 +84,11 @@
       },
       "AVAILABILITY": {
         "LABEL": "Availability",
-        "STATUSES_LIST": ["Online", "Busy", "Offline"]
+        "STATUSES_LIST": [
+          "Online",
+          "Busy",
+          "Offline"
+        ]
       },
       "EMAIL": {
         "LABEL": "Your email address",
@@ -161,7 +165,7 @@
     "LABELS": "Labels",
     "CUSTOM_ATTRIBUTES": "Custom Attributes",
     "AUTOMATION": "Automation",
-    "BOT": "CSML Bots",
+    "BOT": "Bots",
     "TEAMS": "Teams",
     "CUSTOM_VIEWS_FOLDER": "Folders",
     "CUSTOM_VIEWS_SEGMENTS": "Segments",

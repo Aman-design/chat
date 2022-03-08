@@ -2,21 +2,31 @@
   <div class="column content-box no-padding">
     <div class="row">
       <div class="small-8 columns">
-        <csml-monaco-editor v-model="csmlCode" class="bot-editor full-height" />
+        <div class="full-height editor-wrapper">
+          <csml-monaco-editor v-model="bot.csmlCode" class="bot-editor" />
+          <div v-if="$v.bot.csmlCode.$error" class="editor-error-message">
+            <span>Where is your code?</span>
+          </div>
+        </div>
       </div>
       <div class="small-4 columns content-box full-height">
-        <form class="details-editor" @submit.prevent="submit">
+        <form class="details-editor" @submit.prevent="saveBot">
           <div>
-            <label>
+            <label :class="{ error: $v.bot.name.$error }">
               Bot Name
-              <input type="text" placeholder="Give your bot a name" />
-              <!-- <span v-if="true" class="message">
-            Error
-          </span> -->
+              <input
+                v-model="bot.name"
+                type="text"
+                placeholder="Give your bot a name"
+              />
+              <span v-if="$v.bot.name.$error" class="message">
+                Please enter a valid name
+              </span>
             </label>
             <label>
               Description
               <textarea
+                v-model="bot.description"
                 rows="4"
                 placeholder="What does this bot do?"
               ></textarea>
@@ -30,10 +40,22 @@
 </template>
 
 <script>
+import alertMixin from 'shared/mixins/alertMixin';
+import { required } from 'vuelidate/lib/validators';
 export default {
+  mixins: [alertMixin],
+  validations: {
+    bot: {
+      name: { required },
+      csmlCode: { required },
+    },
+  },
   data() {
     return {
-      csmlCode: `start:
+      bot: {
+        name: null,
+        description: null,
+        csmlCode: `start:
   say "Hello World! 👋"
   say Image("https://media4.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif")
   say Wait(1000)
@@ -43,11 +65,19 @@ export default {
    
 goto end
 `,
+      },
     };
   },
   methods: {
-    submit() {
-      console.log('Submuit');
+    async saveBot() {
+      try {
+        this.$v.$touch();
+        if (this.$v.$invalid) return;
+        await this.$store.dispatch('bots/create', this.bot);
+        this.showSuccess('Bot created successfully');
+      } catch (error) {
+        this.showAlert('Your CSML code is not valid, please fix it');
+      }
     },
   },
 };
@@ -63,11 +93,27 @@ goto end
 
 .bot-editor {
   width: 100%;
+  height: 100%;
 }
 .details-editor {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+}
+.editor-wrapper {
+  position: relative;
+}
+.editor-error-message {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  background-color: #e0bbbb;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  justify-content: center;
+  flex-shrink: 0;
 }
 </style>
