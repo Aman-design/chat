@@ -1,11 +1,12 @@
 class Api::V1::Accounts::CsmlBotsController < Api::V1::Accounts::BaseController
   before_action :fetch_csml_bots, except: [:create]
   before_action :fetch_csml_bot, only: [:show, :update, :destroy]
+  before_action :ensure_connected_inboxes, only: [:show, :update]
   before_action :validate_csml_bot, only: [:create, :update]
 
   def index; end
 
-  def show; 
+  def show
     ensure_connected_inboxes
   end
 
@@ -51,7 +52,7 @@ class Api::V1::Accounts::CsmlBotsController < Api::V1::Accounts::BaseController
     @connected_inboxes.destroy_all
 
     params[:inboxes].each do |inbox_id|
-      Integrations::Hook.create(
+      Current.account.hooks.create!(
         app_id: 'csml',
         inbox_id: inbox_id,
         status: :enabled,
@@ -59,7 +60,7 @@ class Api::V1::Accounts::CsmlBotsController < Api::V1::Accounts::BaseController
       )
     end
 
-    ensure_connected_inboxes
+    @connected_inboxes.reload
   end
 
   def ensure_connected_inboxes
