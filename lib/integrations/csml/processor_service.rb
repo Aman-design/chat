@@ -1,57 +1,19 @@
-class Integrations::Csml::ProcessorService
-  pattr_initialize [:event_name!, :hook!, :event_data!]
-
-  def perform
-    message = event_data[:message]
-
-    return if message.private?
-    return unless processable_message?(message)
-    return unless conversation.pending?
-
-    content = message_content(message)
-    response = get_csml_response(conversation.contact_inbox.source_id, content) if content.present?
-    process_response(message, response) if response.present?
-  end
-
+class Integrations::Csml::ProcessorService < Integrations::BotProcessorService
   private
 
   def csml_bot
     @csml_bot ||= CsmlBot.find(hook.settings['csml_bot_id'])
   end
 
-  def conversation
-    message = event_data[:message]
-    @conversation ||= message.conversation
-  end
-
-  def message_content(message)
-    # TODO: might needs to change this to a way that we fetch the updated value from event data instead
-    # cause the message.updated event could be that that the message was deleted
-
-    return message.content_attributes['submitted_values']&.first&.dig('value') if event_name == 'message.updated'
-
-    message.content
-  end
-
-  def processable_message?(message)
-    # TODO: change from reportable and create a dedicated method for this?
-    return unless message.reportable?
-    return if message.outgoing? && !processable_outgoing_message?(message)
-
-    true
-  end
-
-  def processable_outgoing_message?(message)
-    event_name == 'message.updated' && ['input_select'].include?(message.content_type)
-  end
-
-  def get_csml_response(session_id, content)
+  def get_response(session_id, content)
     @csml_engine = CsmlEngine.new(GlobalConfigService.load('CSML_BOT_HOST', ''), GlobalConfigService.load('CSML_BOT_API_KEY', ''))
     @csml_engine.run(
       bot_payload,
-      client: client_params(session_id),
-      payload: message_payload(content),
-      metadata: metadata_params
+      {
+        client: client_params(session_id),
+        payload: message_payload(content),
+        metadata: metadata_params
+      }
     )
   end
 
@@ -63,7 +25,7 @@ class Integrations::Csml::ProcessorService
     }
   end
 
-  def message_payload
+  def message_payload(content)
     {
       content_type: 'text',
       content: { text: content }
@@ -143,14 +105,5 @@ class Integrations::Csml::ProcessorService
         content_attributes: { items: buttons }
       }
     )
-  end
-
-  def process_action(message, action)
-    case action
-    when 'handoff'
-      message.conversation.open!
-    when 'resolve'
-      message.conversation.resolved!
-    end
   end
 end
