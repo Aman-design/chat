@@ -1,12 +1,13 @@
 class Api::V1::Accounts::CsmlBotsController < Api::V1::Accounts::BaseController
   before_action :fetch_csml_bots, except: [:create]
   before_action :fetch_csml_bot, only: [:show, :update, :destroy]
-  before_action :get_connected_inboxes, only: [:show, :update]
   before_action :validate_csml_bot, only: [:create, :update]
 
   def index; end
 
-  def show; end
+  def show; 
+    ensure_connected_inboxes
+  end
 
   def create
     @csml_bot = Current.account.csml_bots.create!(permitted_payload)
@@ -45,11 +46,11 @@ class Api::V1::Accounts::CsmlBotsController < Api::V1::Accounts::BaseController
   def connect_inboxes
     ensure_connected_inboxes
 
-    return if permitted_payload[:inboxes].blank?
+    return if params[:inboxes].blank?
 
     @connected_inboxes.destroy_all
 
-    permitted_payload[:inboxes].each do |inbox_id|
+    params[:inboxes].each do |inbox_id|
       Integrations::Hook.create(
         app_id: 'csml',
         inbox_id: inbox_id,
