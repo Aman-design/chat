@@ -9,6 +9,7 @@ export const state = {
     isCreating: false,
     isDeleting: false,
     isUpdating: false,
+    isValidating: false,
   },
 };
 
@@ -53,6 +54,16 @@ export const actions = {
       throw new Error(error);
     } finally {
       commit(types.SET_BOT_UI_FLAG, { isUpdating: false });
+    }
+  },
+  validate: async ({ commit }, id) => {
+    commit(types.SET_BOT_UI_FLAG, { isValidating: true });
+    try {
+      await BotsAPI.validate(id);
+    } catch (error) {
+      throw new Error(error);
+    } finally {
+      commit(types.SET_BOT_UI_FLAG, { isValidating: false });
     }
   },
   delete: async ({ commit }, id) => {

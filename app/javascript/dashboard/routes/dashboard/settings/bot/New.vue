@@ -3,8 +3,8 @@
     <div class="row">
       <div class="small-8 columns">
         <div class="full-height editor-wrapper">
-          <csml-monaco-editor v-model="bot.csmlCode" class="bot-editor" />
-          <div v-if="$v.bot.csmlCode.$error" class="editor-error-message">
+          <csml-monaco-editor v-model="bot.bot_config" class="bot-editor" />
+          <div v-if="$v.bot.bot_config.$error" class="editor-error-message">
             <span>Where is your code?</span>
           </div>
         </div>
@@ -47,7 +47,7 @@ export default {
   validations: {
     bot: {
       name: { required },
-      csmlCode: { required },
+      bot_config: { required },
     },
   },
   data() {
@@ -55,7 +55,7 @@ export default {
       bot: {
         name: null,
         description: null,
-        csmlCode: `start:
+        bot_config: `start:
   say "Hello World! 👋"
   say Image("https://media4.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif")
   say Wait(1000)
@@ -75,8 +75,9 @@ goto end
         if (this.$v.$invalid) return;
         await this.$store.dispatch('bots/create', this.bot);
         this.showSuccess('Bot created successfully');
+        throw new Error('Your CSML code is not valid, please fix it');
       } catch (error) {
-        this.showAlert('Your CSML code is not valid, please fix it');
+        this.showAlert(error);
       }
     },
   },

@@ -1,6 +1,6 @@
 {
     "BOT": {
-        "HEADER": "CSML Bots",
+        "HEADER": "Bots",
         "HEADER_BTN_TXT": "Add Bot Configuration",
         "SIDEBAR_TXT": "<p><b>CSML Bot Configuration</b> <p>You can create your own bots using <a href='https://www.csml.dev/' target='_blank'>csml.dev</a>. You can read more about csml in their docs <a href='https://docs.csml.dev/language/'>here</a></p>",
         "ADD": {
