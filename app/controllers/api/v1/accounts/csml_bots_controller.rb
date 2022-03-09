@@ -6,7 +6,7 @@ class Api::V1::Accounts::CsmlBotsController < Api::V1::Accounts::BaseController
 
   def index; end
 
-  def show;
+  def show
     ensure_connected_inboxes
   end
 
