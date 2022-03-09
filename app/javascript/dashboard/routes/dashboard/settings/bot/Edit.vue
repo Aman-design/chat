@@ -32,6 +32,19 @@
                 placeholder="What does this bot do?"
               ></textarea>
             </label>
+            <div class="multiselect--wrap">
+              <label>
+                Connected Inboxes
+              </label>
+              <multiselect
+                v-model="bot.inboxes"
+                label="name"
+                track-by="id"
+                :options="inboxes"
+                :multiple="true"
+                :taggable="true"
+              />
+            </div>
           </div>
           <woot-button>Validate and save</woot-button>
         </form>
@@ -50,7 +63,7 @@ export default {
   data() {
     return {
       bot: null,
-      allInboxes: [],
+      inboxes: [],
     };
   },
   validations: {
@@ -65,7 +78,8 @@ export default {
     }),
   },
   mounted() {
-    this.allInboxes = this.$store.getters['inboxes/getInboxes'].map(i => ({
+    this.$store.dispatch('inboxes/get');
+    this.inboxes = this.$store.getters['inboxes/getInboxes'].map(i => ({
       name: i.name,
       id: i.id,
     }));
@@ -73,9 +87,9 @@ export default {
       .dispatch('bots/getBotById', this.$route.params.botId)
       .then(bot => {
         this.bot = bot;
-        // this.box.inboxes = this.allInboxes.filter(i =>
-        //   this.bot.inboxes.includes(i.id)
-        // );
+        this.box.inboxes = this.inboxes.filter(i => {
+          return this.bot.inboxes.includes(i.id);
+        });
       });
   },
   methods: {

@@ -65,23 +65,11 @@ export default {
   },
   data() {
     return {
-      bot: null,
-    };
-  },
-  computed: {
-    inboxes() {
-      return this.$store.getters['inboxes/getInboxes'].map(i => ({
-        name: i.name,
-        id: i.id,
-      }));
-    },
-  },
-  mounted() {
-    this.bot = {
-      name: null,
-      description: null,
-      inboxes: [],
-      bot_config: `start:
+      bot: {
+        name: null,
+        description: null,
+        inboxes: [],
+        bot_config: `start:
   say "Hello World! 👋"
   say Image("https://media4.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif")
   say Wait(1000)
@@ -91,7 +79,16 @@ export default {
 
 goto end
 `,
+      },
     };
+  },
+  computed: {
+    inboxes() {
+      return this.$store.getters['inboxes/getInboxes'].map(i => ({
+        name: i.name,
+        id: i.id,
+      }));
+    },
   },
   methods: {
     async saveBot() {
