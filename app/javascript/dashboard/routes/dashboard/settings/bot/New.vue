@@ -62,7 +62,7 @@ export default {
   say Typing(1500)
 
 /** You can find more about CSML format here: https://csml.dev/ */
-   
+
 goto end
 `,
       },
@@ -73,7 +73,11 @@ goto end
       try {
         this.$v.$touch();
         if (this.$v.$invalid) return;
-        await this.$store.dispatch('bots/create', this.bot);
+        await this.$store.dispatch('bots/create', {
+          name: this.bot.name,
+          description: this.bot.description,
+          bot_config: this.bot.csmlCode,
+        });
         this.showSuccess('Bot created successfully');
         throw new Error('Your CSML code is not valid, please fix it');
       } catch (error) {
