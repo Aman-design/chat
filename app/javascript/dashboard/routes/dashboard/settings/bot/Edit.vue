@@ -62,7 +62,7 @@ export default {
   mixins: [alertMixin],
   data() {
     return {
-      bot: null,
+      bot: {},
       inboxes: [],
     };
   },
