@@ -50,6 +50,7 @@ export default {
   data() {
     return {
       bot: null,
+      allInboxes: [],
     };
   },
   validations: {
@@ -64,10 +65,17 @@ export default {
     }),
   },
   mounted() {
+    this.allInboxes = this.$store.getters['inboxes/getInboxes'].map(i => ({
+      name: i.name,
+      id: i.id,
+    }));
     this.$store
       .dispatch('bots/getBotById', this.$route.params.botId)
       .then(bot => {
         this.bot = bot;
+        // this.box.inboxes = this.allInboxes.filter(i =>
+        //   this.bot.inboxes.includes(i.id)
+        // );
       });
   },
   methods: {
