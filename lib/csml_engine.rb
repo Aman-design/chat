@@ -26,9 +26,11 @@ class CsmlEngine
       }
     }
     response = HTTParty.post(
-      "#{@host_url}/run",
-      headers: { API_KEY_HEADER => @api_key, 'Content-Type' => 'application/json' },
-      body: payload.to_json
+      "#{@host_url}/run", {
+        headers: { API_KEY_HEADER => @api_key, 'Content-Type' => 'application/json' },
+        body: payload.to_json,
+        debug_output: $stdout
+      }
     )
 
     return response.parsed_response if response.success?

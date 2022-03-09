@@ -60,6 +60,31 @@ dialogflow:
     }
   ]
   visible_properties: ['project_id']
+csml:
+  id: csml
+  logo: csml.svg
+  i18n_key: csml
+  action: /csml
+  hook_type: inbox
+  allow_multiple_hooks: true
+  settings_json_schema:  {
+    "type": "object",
+    "properties": {
+      "csml_bot_id": { "type": "number" }
+    },
+    "required": ["csml_bot_id"],
+    "additionalProperties": false
+  }
+  settings_form_schema: [
+    {
+      "label": "CSML Bot ID",
+      "type": "text",
+      "name": "csml_bot_id",
+      "validation": "required",
+      "validationName": 'CSML Bot Id',
+    },
+  ]
+  visible_properties: ['csml_bot_id']
 fullcontact:
   id: fullcontact
   logo: fullcontact.png
@@ -77,4 +102,3 @@ fullcontact:
   settings_form_schema:
     [{ 'label': 'API Key', 'type': 'text', 'name': 'api_key',"validation": "required", }]
   visible_properties: ['api_key']
-

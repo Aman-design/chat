@@ -7,6 +7,8 @@ class HookJob < ApplicationJob
       process_slack_integration(hook, event_name, event_data)
     when 'dialogflow'
       process_dialogflow_integration(hook, event_name, event_data)
+    when 'csml'
+      process_csml_integration(hook, event_name, event_data)
     end
   rescue StandardError => e
     Sentry.capture_exception(e)
@@ -25,5 +27,11 @@ class HookJob < ApplicationJob
     return unless ['message.created', 'message.updated'].include?(event_name)
 
     Integrations::Dialogflow::ProcessorService.new(event_name: event_name, hook: hook, event_data: event_data).perform
+  end
+
+  def process_csml_integration(hook, event_name, event_data)
+    return unless ['message.created', 'message.updated'].include?(event_name)
+
+    Integrations::Csml::ProcessorService.new(event_name: event_name, hook: hook, event_data: event_data).perform
   end
 end

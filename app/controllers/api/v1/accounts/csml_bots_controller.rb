@@ -43,7 +43,7 @@ class Api::V1::Accounts::CsmlBotsController < Api::V1::Accounts::BaseController
   end
 
   def validate_csml_bot
-    csml_client = CsmlEngine.new(GlobalConfigService.load('CSML_BOT_HOST', ''), GlobalConfigService.load('CSML_API_KEY', ''))
+    csml_client = CsmlEngine.new(GlobalConfigService.load('CSML_BOT_HOST', ''), GlobalConfigService.load('CSML_BOT_API_KEY', ''))
 
     response = csml_client.validate(
       {
