@@ -9,16 +9,19 @@ export const state = {
     isCreating: false,
     isDeleting: false,
     isUpdating: false,
-    isValidating: false,
   },
 };
 
 export const getters = {
-  getBOTs(_state) {
+  getBots(_state) {
     return _state.records;
   },
   getUIFlags(_state) {
     return _state.uiFlags;
+  },
+  getBot: _state => botId => {
+    const [bot] = _state.records.filter(record => record.id === Number(botId));
+    return bot || {};
   },
 };
 
@@ -27,7 +30,7 @@ export const actions = {
     commit(types.SET_BOT_UI_FLAG, { isFetching: true });
     try {
       const response = await BotsAPI.get();
-      commit(types.SET_BOTS, response.data.payload);
+      commit(types.SET_BOTS, response.data);
     } catch (error) {
       // Ignore error
     } finally {
@@ -49,21 +52,11 @@ export const actions = {
     commit(types.SET_BOT_UI_FLAG, { isUpdating: true });
     try {
       const response = await BotsAPI.update(id, updateObj);
-      commit(types.EDIT_BOT, response.data.payload);
+      commit(types.EDIT_BOT, response.data);
     } catch (error) {
       throw new Error(error);
     } finally {
       commit(types.SET_BOT_UI_FLAG, { isUpdating: false });
-    }
-  },
-  validate: async ({ commit }, id) => {
-    commit(types.SET_BOT_UI_FLAG, { isValidating: true });
-    try {
-      await BotsAPI.validate(id);
-    } catch (error) {
-      throw new Error(error);
-    } finally {
-      commit(types.SET_BOT_UI_FLAG, { isValidating: false });
     }
   },
   delete: async ({ commit }, id) => {
@@ -75,6 +68,17 @@ export const actions = {
       throw new Error(error);
     } finally {
       commit(types.SET_BOT_UI_FLAG, { isDeleting: false });
+    }
+  },
+  getBotById: async ({ commit }, id) => {
+    commit(types.SET_BOT_UI_FLAG, { isFetching: true });
+    try {
+      const { data } = await BotsAPI.getBotById(id);
+      return data;
+    } catch (error) {
+      throw new Error(error);
+    } finally {
+      commit(types.SET_BOT_UI_FLAG, { isFetching: false });
     }
   },
 };

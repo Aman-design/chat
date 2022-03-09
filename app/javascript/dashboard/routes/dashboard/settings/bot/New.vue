@@ -31,6 +31,19 @@
                 placeholder="What does this bot do?"
               ></textarea>
             </label>
+            <div class="multiselect--wrap">
+              <label>
+                Select Inboxes to connect
+              </label>
+              <multiselect
+                v-model="bot.inboxes"
+                label="name"
+                track-by="id"
+                :options="inboxes"
+                :multiple="true"
+                :taggable="true"
+              />
+            </div>
           </div>
           <woot-button>Validate and save</woot-button>
         </form>
@@ -52,10 +65,23 @@ export default {
   },
   data() {
     return {
-      bot: {
-        name: null,
-        description: null,
-        bot_config: `start:
+      bot: null,
+    };
+  },
+  computed: {
+    inboxes() {
+      return this.$store.getters['inboxes/getInboxes'].map(i => ({
+        name: i.name,
+        id: i.id,
+      }));
+    },
+  },
+  mounted() {
+    this.bot = {
+      name: null,
+      description: null,
+      inboxes: [],
+      bot_config: `start:
   say "Hello World! 👋"
   say Image("https://media4.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif")
   say Wait(1000)
@@ -65,7 +91,6 @@ export default {
 
 goto end
 `,
-      },
     };
   },
   methods: {
@@ -73,15 +98,12 @@ goto end
       try {
         this.$v.$touch();
         if (this.$v.$invalid) return;
-        await this.$store.dispatch('bots/create', {
-          name: this.bot.name,
-          description: this.bot.description,
-          bot_config: this.bot.csmlCode,
-        });
-        this.showSuccess('Bot created successfully');
-        throw new Error('Your CSML code is not valid, please fix it');
+        this.bot.inboxes = this.bot.inboxes.map(i => i.id);
+        await this.$store.dispatch('bots/create', this.bot);
+        this.showAlert('Bot created successfully');
+        this.$router.back();
       } catch (error) {
-        this.showAlert(error);
+        this.showAlert('Your csml configuration is invalid, please fix');
       }
     },
   },

@@ -7,8 +7,8 @@ class BotsAPI extends ApiClient {
     super('csml_bots', { accountScoped: true });
   }
 
-  validate(botId) {
-    return axios.post(`${this.url}/${botId}/validate`);
+  getBotById(botId) {
+    return axios.get(`${this.url}/${botId}`);
   }
 }
 

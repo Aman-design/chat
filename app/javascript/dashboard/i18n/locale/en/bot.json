@@ -40,8 +40,7 @@
         "LIST": {
             "TABLE_HEADER": [
                 "Name",
-                "Description",
-                "Created on"
+                "Description"
             ],
             "404": "No automation rules found"
         },

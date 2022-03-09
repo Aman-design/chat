@@ -2,7 +2,15 @@
   <div class="column content-box">
     <div class="row">
       <div class="small-8 columns with-right-space">
-        <table class="woot-table">
+        <p
+          v-if="!uiFlags.isFetching && !records.length"
+          class="no-items-error-message"
+        >
+          No Bots found, please create by clicking the "Configure New Bot"
+          Button ↗
+        </p>
+        <woot-loading-state v-if="uiFlags.isFetching" message="Fetching Bots" />
+        <table v-if="!uiFlags.isFetching && records.length" class="woot-table">
           <thead>
             <th v-for="thHeader in $t('BOT.LIST.TABLE_HEADER')" :key="thHeader">
               {{ thHeader }}
@@ -11,10 +19,22 @@
           <tbody>
             <tr v-for="(bot, index) in records" :key="index">
               <td class="nowrap">
-                <router-link :to="`bot/${index}`">{{ bot.name }}</router-link>
+                <router-link :to="`bot/${bot.id}`">{{ bot.name }}</router-link>
               </td>
-              <td>{{ bot.description }}</td>
-              <td class="nowrap">{{ bot.created_on }}</td>
+              <td>{{ bot.description || '---' }}</td>
+              <td class="button-wrapper">
+                <woot-button
+                  v-tooltip.top="'Delete Bot'"
+                  variant="smooth"
+                  color-scheme="alert"
+                  size="tiny"
+                  icon="dismiss-circle"
+                  class-names="grey-btn"
+                  :is-loading="loading[bot.id]"
+                  @click="deleteBot(bot.id)"
+                >
+                </woot-button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -35,41 +55,44 @@
       class-names="button--fixed-right-top"
       icon="add-circle"
     >
-      <router-link to="bot/new">
+      <router-link to="bot/new" class="white-text">
         Configure new bot
       </router-link>
     </woot-button>
+    <woot-confirm-modal
+      ref="confirmDialog"
+      title="Delete Bot"
+      description="Are you sure you want to delete this bot? This action is irreversible"
+    />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
-      records: [
-        {
-          name: 'Ultron',
-          description:
-            'This is some random test bot. This is some random test bot. This is some random test bot. This is some random test bot',
-          created_on: 'Tue 8 Mar, 2022',
-        },
-        {
-          name: 'Super bot',
-          description: 'This is some random test bot',
-          created_on: 'Mon 12 Feb, 2022',
-        },
-        {
-          name: 'Wall e',
-          description: 'This is some random test bot',
-          created_on: 'Sub 18 Dec, 2022',
-        },
-        {
-          name: 'Test Bot 32',
-          description: 'This is some random test bot',
-          created_on: 'Wed 10 Mar, 2022',
-        },
-      ],
+      loading: {},
     };
+  },
+  computed: {
+    ...mapGetters({
+      records: ['bots/getBots'],
+      uiFlags: 'bots/getUIFlags',
+    }),
+  },
+  mounted() {
+    this.$store.dispatch('bots/get');
+  },
+  methods: {
+    async deleteBot(id) {
+      const ok = await this.$refs.confirmDialog.showConfirmation();
+      if (ok) {
+        await await this.$store.dispatch('bots/delete', id);
+        this.showAlert('Bot deleted');
+      }
+    },
   },
 };
 </script>
@@ -117,5 +140,8 @@ export default {
 
 .nowrap {
   white-space: nowrap;
+}
+.white-text {
+  color: white;
 }
 </style>
