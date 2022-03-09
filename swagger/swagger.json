@@ -3408,7 +3408,7 @@
           "$ref": "#/parameters/report_metric"
         },
         {
-          "$ref": "#/parameters/report_type"
+          "$ref": "#/parameters/type"
         },
         {
           "in": "query",
@@ -3462,7 +3462,7 @@
           "$ref": "#/parameters/account_id"
         },
         {
-          "$ref": "#/parameters/report_type"
+          "$ref": "#/parameters/type"
         },
         {
           "in": "query",
@@ -4800,9 +4800,9 @@
       "required": true,
       "description": "The numeric ID of the custom filter"
     },
-    "report_type": {
+    "type": {
       "in": "query",
-      "name": "report_type",
+      "name": "type",
       "type": "string",
       "enum": [
         "account",

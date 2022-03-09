@@ -34,7 +34,7 @@ platform_user_id:
 custom_filter_id:
   $ref: ./custom_filter_id.yml
 
-report_type:
+type:
   $ref: ./report_type.yml
 
 report_metric:

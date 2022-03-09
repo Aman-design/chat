@@ -341,7 +341,7 @@
   parameters:
     - $ref: '#/parameters/account_id'
     - $ref: '#/parameters/report_metric'
-    - $ref: '#/parameters/report_type'
+    - $ref: '#/parameters/type'
     - in: query
       name: id
       type: string
@@ -361,7 +361,7 @@
 /api/v2/accounts/{account_id}/reports/summary:
   parameters:
     - $ref: '#/parameters/account_id'
-    - $ref: '#/parameters/report_type'
+    - $ref: '#/parameters/type'
     - in: query
       name: id
       type: string
