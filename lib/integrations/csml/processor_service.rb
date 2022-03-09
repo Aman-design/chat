@@ -45,18 +45,17 @@ class Integrations::Csml::ProcessorService
     event_name == 'message.updated' && ['input_select'].include?(message.content_type)
   end
 
-  def get_csml_response(_session_id, _content)
+  def get_csml_response(session_id, content)
     @csml_engine = CsmlEngine.new(GlobalConfigService.load('CSML_BOT_HOST', ''), GlobalConfigService.load('CSML_BOT_API_KEY', ''))
-
     @csml_engine.run(
       bot_payload,
-      client: client_params,
-      payload: message_payload,
+      client: client_params(session_id),
+      payload: message_payload(content),
       metadata: metadata_params
     )
   end
 
-  def client_params
+  def client_params(session_id)
     {
       bot_id: "chatwoot-bot-#{conversation.inbox.id}",
       channel_id: "chatwoot-bot-inbox-#{conversation.inbox.id}",
@@ -113,13 +112,13 @@ class Integrations::Csml::ProcessorService
 
     case message_payload['content_type']
     when 'text'
-      process_text_messages(message, conversation)
+      process_text_messages(message_payload, conversation)
     when 'question'
-      process_question_messages(message, conversation)
+      process_question_messages(message_payload, conversation)
     end
   end
 
-  def process_text_messages(_message, conversation)
+  def process_text_messages(message_payload, conversation)
     conversation.messages.create(
       {
         message_type: :outgoing,
@@ -130,7 +129,7 @@ class Integrations::Csml::ProcessorService
     )
   end
 
-  def process_question_messages(_message, conversation)
+  def process_question_messages(message_payload, conversation)
     buttons = message_payload['content']['buttons'].map do |button|
       { title: button['content']['title'], value: button['content']['payload'] }
     end
