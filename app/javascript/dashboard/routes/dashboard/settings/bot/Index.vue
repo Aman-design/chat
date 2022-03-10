@@ -6,10 +6,12 @@
           v-if="!uiFlags.isFetching && !records.length"
           class="no-items-error-message"
         >
-          No Bots found, please create by clicking the "Configure New Bot"
-          Button ↗
+          {{ $t('BOT.LIST.404') }}
         </p>
-        <woot-loading-state v-if="uiFlags.isFetching" message="Fetching Bots" />
+        <woot-loading-state
+          v-if="uiFlags.isFetching"
+          :message="$t('BOT.LIST.LOADING')"
+        />
         <table v-if="!uiFlags.isFetching && records.length" class="woot-table">
           <thead>
             <th v-for="thHeader in $t('BOT.LIST.TABLE_HEADER')" :key="thHeader">
@@ -41,13 +43,7 @@
       </div>
 
       <div class="small-4 columns content-box">
-        <span v-html="$t('BOT.SIDEBAR_TXT')"></span>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque,
-          exercitationem porro. Aperiam itaque vero, illum sapiente illo eveniet
-          explicabo impedit blanditiis et, odio quidem! Animi unde earum minima
-          harum! Rerum?
-        </p>
+        <p v-html="$t('BOT.SIDEBAR_TXT')"></p>
       </div>
     </div>
     <woot-button
@@ -56,13 +52,13 @@
       icon="add-circle"
     >
       <router-link to="bot/new" class="white-text">
-        Configure new bot
+        {{ $t('BOT.ADD.TITLE') }}
       </router-link>
     </woot-button>
     <woot-confirm-modal
       ref="confirmDialog"
-      title="Delete Bot"
-      description="Are you sure you want to delete this bot? This action is irreversible"
+      :title="$t('BOT.DELETE.TITLE')"
+      :description="$t('BOT.DELETE.DESCRIPTION')"
     />
   </div>
 </template>
@@ -90,7 +86,7 @@ export default {
       const ok = await this.$refs.confirmDialog.showConfirmation();
       if (ok) {
         await await this.$store.dispatch('bots/delete', id);
-        this.showAlert('Bot deleted');
+        this.showAlert(this.$t('BOT.DELETE.API.SUCCESS_MESSAGE'));
       }
     },
   },

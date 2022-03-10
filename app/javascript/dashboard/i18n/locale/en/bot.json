@@ -2,39 +2,33 @@
     "BOT": {
         "HEADER": "Bots",
         "HEADER_BTN_TXT": "Add Bot Configuration",
-        "SIDEBAR_TXT": "<p><b>CSML Bot Configuration</b> <p>You can create your own bots using <a href='https://www.csml.dev/' target='_blank'>csml.dev</a>. You can read more about csml in their docs <a href='https://docs.csml.dev/language/'>here</a></p>",
+        "SIDEBAR_TXT": "<p><b>CSML Bots</b> <p>You can create your own custom bots using <a href='https://www.csml.dev/' target='_blank'>csml.dev</a>. Read more about csml in their docs <a href='https://docs.csml.dev/language/'>here</a>.</p><p>Bots will allow you to add more rich features to your conversations like buttons, and links pre configured right from chatwoot editor.</p>",
         "ADD": {
-            "TITLE": "Add Automation Rule",
-            "SUBMIT": "Create",
+            "TITLE": "Configure new bot",
+            "SUBMIT": "Validate and save",
             "CANCEL_BUTTON_TEXT": "Cancel",
             "FORM": {
                 "NAME": {
-                    "LABEL": "Rule Name",
-                    "PLACEHOLDER": "Enter rule name",
-                    "ERROR": "Name is required"
+                    "LABEL": "Bot Name",
+                    "PLACEHOLDER": "Give your bot a name",
+                    "ERROR": "Bot name is required"
                 },
-                "DESC": {
-                    "LABEL": "Description",
-                    "PLACEHOLDER": "Enter rule description",
-                    "ERROR": "Description is required"
+                "DESCRIPTION": {
+                    "LABEL": "Bot Description",
+                    "PLACEHOLDER": "What does this bot do?"
                 },
-                "EVENT": {
-                    "LABEL": "Event",
-                    "PLACEHOLDER": "Please select one",
-                    "ERROR": "Event is required"
+                "INBOX": {
+                    "LABEL": "Connect to Inbox",
+                    "PLACEHOLDER": "Select Inbox"
                 },
-                "CONDITIONS": {
-                    "LABEL": "Conditions"
-                },
-                "ACTIONS": {
-                    "LABEL": "Actions"
+                "BOT_CONFIG": {
+                    "ERROR": "Please enter your CSML bot configuration above",
+                    "API_ERROR": "Your csml configuration is invalid, please fix"
                 }
             },
-            "CONDITION_BUTTON_LABEL": "Add Condition",
-            "ACTION_BUTTON_LABEL": "Add Action",
             "API": {
-                "SUCCESS_MESSAGE": "Automation rule added successfully",
-                "ERROR_MESSAGE": "Could not able to create a automation rule, Please try again later"
+                "SUCCESS_MESSAGE": "Bot added successfully",
+                "ERROR_MESSAGE": "Could not add bot, Please try again later"
             }
         },
         "LIST": {
@@ -42,63 +36,28 @@
                 "Name",
                 "Description"
             ],
-            "404": "No automation rules found"
+            "404": "No Bots found, you can create a bot by clicking the 'Configure New Bot' Button ↗",
+            "LOADING": "Fetching Bots..."
         },
         "DELETE": {
-            "TITLE": "Delete Automation Rule",
+            "TITLE": "Delete Bot",
             "SUBMIT": "Delete",
             "CANCEL_BUTTON_TEXT": "Cancel",
-            "CONFIRM": {
-                "TITLE": "Confirm Deletion",
-                "MESSAGE": "Are you sure to delete ",
-                "YES": "Yes, Delete ",
-                "NO": "No, Keep "
-            },
+            "DESCRIPTION": "Are you sure you want to delete this bot? This action is irreversible",
             "API": {
-                "SUCCESS_MESSAGE": "Automation rule deleted successfully",
-                "ERROR_MESSAGE": "Could not able to delete a automation rule, Please try again later"
+                "SUCCESS_MESSAGE": "Bot deleted successfully",
+                "ERROR_MESSAGE": "Could not able to delete bot, Please try again later"
             }
         },
         "EDIT": {
-            "TITLE": "Edit Automation Rule",
-            "SUBMIT": "Update",
+            "LOADING": "Fetching Bots...",
+            "TITLE": "Edit Bot",
+            "SUBMIT": "Save and validate",
             "CANCEL_BUTTON_TEXT": "Cancel",
             "API": {
-                "SUCCESS_MESSAGE": "Automation rule updated successfully",
-                "ERROR_MESSAGE": "Could not update automation rule, Please try again later"
+                "SUCCESS_MESSAGE": "Bot updated successfully",
+                "ERROR_MESSAGE": "Could not update bot, Please try again later"
             }
-        },
-        "CLONE": {
-            "TOOLTIP": "Clone",
-            "API": {
-                "SUCCESS_MESSAGE": "Automation cloned successfully",
-                "ERROR_MESSAGE": "Could not clone automation rule, Please try again later"
-            }
-        },
-        "FORM": {
-            "EDIT": "Edit",
-            "CREATE": "Create",
-            "DELETE": "Delete",
-            "CANCEL": "Cancel",
-            "RESET_MESSAGE": "Changing event type will reset the conditions and events you have added below"
-        },
-        "CONDITION": {
-            "DELETE_MESSAGE": "You need to have atleast one condition to save"
-        },
-        "ACTION": {
-            "DELETE_MESSAGE": "You need to have atleast one action to save"
-        },
-        "TOGGLE": {
-            "ACTIVATION_TITLE": "Activate Automation Rule",
-            "DEACTIVATION_TITLE": "Deactivate Automation Rule",
-            "ACTIVATION_DESCRIPTION": "This action will activate the automation rule '{automationName}'. Are you sure you want to proceed?",
-            "DEACTIVATION_DESCRIPTION": "This action will deactivate the automation rule '{automationName}'. Are you sure you want to proceed?",
-            "ACTIVATION_SUCCESFUL": "Automation Rule Activated Successfully",
-            "DEACTIVATION_SUCCESFUL": "Automation Rule Deactivated Successfully",
-            "ACTIVATION_ERROR": "Could not Activate Automation, Please try again later",
-            "DEACTIVATION_ERROR": "Could not Deactivate Automation, Please try again later",
-            "CONFIRMATION_LABEL": "Yes",
-            "CANCEL_LABEL": "No"
         }
     }
 }

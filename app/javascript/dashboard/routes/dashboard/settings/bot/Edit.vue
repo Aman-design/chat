@@ -1,12 +1,15 @@
 <template>
   <div class="column content-box no-padding">
     <div class="row">
-      <woot-loading-state v-if="uiFlags.isFetching" message="Fetching Bots" />
+      <woot-loading-state
+        v-if="uiFlags.isFetching"
+        :message="$('BOT.EDIT.FETCHING_BOT')"
+      />
       <div v-if="bot" class="small-8 columns">
         <div class="full-height editor-wrapper">
           <csml-monaco-editor v-model="bot.bot_config" class="bot-editor" />
           <div v-if="$v.bot.bot_config.$error" class="editor-error-message">
-            <span>Where is your code?</span>
+            <span>{{ $t('BOT.ADD.FORM.BOT_CONFIG.ERROR') }}</span>
           </div>
         </div>
       </div>
@@ -14,27 +17,27 @@
         <form class="details-editor" @submit.prevent="saveBot">
           <div>
             <label :class="{ error: $v.bot.name.$error }">
-              Bot Name
+              {{ $t('BOT.ADD.FORM.NAME.LABEL') }}
               <input
                 v-model="bot.name"
                 type="text"
-                placeholder="Give your bot a name"
+                :placeholder="$t('BOT.ADD.FORM.NAME.PLACEHOLDER')"
               />
               <span v-if="$v.bot.name.$error" class="message">
-                Please enter a valid name
+                {{ $t('BOT.ADD.FORM.NAME.ERROR') }}
               </span>
             </label>
             <label>
-              Description
+              {{ $t('BOT.ADD.FORM.DESCRIPTION.LABEL') }}
               <textarea
                 v-model="bot.description"
                 rows="4"
-                placeholder="What does this bot do?"
+                :placeholder="$t('BOT.ADD.FORM.DESCRIPTION.PLACEHOLDER')"
               ></textarea>
             </label>
             <div class="multiselect--wrap">
               <label>
-                Connected Inboxes
+                {{ $t('BOT.ADD.FORM.INBOX.LABEL') }}
               </label>
               <multiselect
                 v-model="bot.inboxes"
@@ -46,7 +49,7 @@
               />
             </div>
           </div>
-          <woot-button>Validate and save</woot-button>
+          <woot-button>{{ $t('BOT.ADD.SUBMIT') }}</woot-button>
         </form>
       </div>
     </div>
@@ -98,7 +101,7 @@ export default {
         this.$v.$touch();
         if (this.$v.$invalid) return;
         await this.$store.dispatch('bots/update', this.bot);
-        this.showAlert('Bot updated successfully');
+        this.showAlert(this.$('BOT.EDIT.API.SUCCESS_MESSAGE'));
       } catch (error) {
         this.showAlert(error);
       }

@@ -5,7 +5,7 @@
         <div class="full-height editor-wrapper">
           <csml-monaco-editor v-model="bot.bot_config" class="bot-editor" />
           <div v-if="$v.bot.bot_config.$error" class="editor-error-message">
-            <span>Where is your code?</span>
+            <span>{{ $t('BOT.ADD.FORM.BOT_CONFIG.ERROR') }}</span>
           </div>
         </div>
       </div>
@@ -13,27 +13,27 @@
         <form class="details-editor" @submit.prevent="saveBot">
           <div>
             <label :class="{ error: $v.bot.name.$error }">
-              Bot Name
+              {{ $t('BOT.ADD.FORM.NAME.LABEL') }}
               <input
                 v-model="bot.name"
                 type="text"
-                placeholder="Give your bot a name"
+                :placeholder="$t('BOT.ADD.FORM.NAME.PLACEHOLDER')"
               />
               <span v-if="$v.bot.name.$error" class="message">
-                Please enter a valid name
+                {{ $t('BOT.ADD.FORM.NAME.ERROR') }}
               </span>
             </label>
             <label>
-              Description
+              {{ $t('BOT.ADD.FORM.DESCRIPTION.LABEL') }}
               <textarea
                 v-model="bot.description"
                 rows="4"
-                placeholder="What does this bot do?"
+                :placeholder="$t('BOT.ADD.FORM.DESCRIPTION.PLACEHOLDER')"
               ></textarea>
             </label>
             <div class="multiselect--wrap">
               <label>
-                Select Inboxes to connect
+                {{ $t('BOT.ADD.FORM.INBOX.LABEL') }}
               </label>
               <multiselect
                 v-model="bot.inboxes"
@@ -45,7 +45,7 @@
               />
             </div>
           </div>
-          <woot-button>Validate and save</woot-button>
+          <woot-button>{{ $t('BOT.ADD.SUBMIT') }}</woot-button>
         </form>
       </div>
     </div>
@@ -69,16 +69,7 @@ export default {
         name: null,
         description: null,
         inboxes: [],
-        bot_config: `start:
-  say "Hello World! 👋"
-  say Image("https://media4.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif")
-  say Wait(1000)
-  say Typing(1500)
-
-/** You can find more about CSML format here: https://csml.dev/ */
-
-goto end
-`,
+        bot_config: '',
       },
     };
   },
@@ -97,10 +88,10 @@ goto end
         if (this.$v.$invalid) return;
         this.bot.inboxes = this.bot.inboxes.map(i => i.id);
         await this.$store.dispatch('bots/create', this.bot);
-        this.showAlert('Bot created successfully');
+        this.showAlert(this.$('BOT.ADD.API.SUCCESS_MESSAGE'));
         this.$router.back();
       } catch (error) {
-        this.showAlert('Your csml configuration is invalid, please fix');
+        this.showAlert(this.$('BOT.ADD.FORM.BOT_CONFIG.API_ERROR'));
       }
     },
   },
